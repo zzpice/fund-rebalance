@@ -51,11 +51,11 @@ npm run dev
 
 持仓不会上传、写入数据库或保存在浏览器中；只有外观偏好会保存在本机。
 
-## PWA 与缓存兼容
+## PWA 与缓存
 
 页面资源、模块导入、Service Worker 注册及缓存资源使用相对路径；manifest 的 `id`、`start_url`、`scope` 均为 `./`，兼容根路径和 `/zp-folio/` 子路径部署。
 
-Service Worker 使用 `zp-folio-v<版本>` 缓存，仅清理本项目的过期缓存（含 `rmb-rebalancer-`、`bond-rebalancer-` 历史前缀）；外观偏好沿用 `rmb-rebalancer-theme`，保留同一站点来源下的已有设置。
+Service Worker 使用 `zp-folio-v<版本>` 缓存，仅清理 `zp-folio-` 前缀下的过期缓存，保留当前版本和其他应用的缓存；外观偏好使用 `zp-folio-theme` 保存在本机。
 
 当前版本：**v2.2.0**
 

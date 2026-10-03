@@ -13,8 +13,8 @@
     <script>
       (() => {
         let theme;
-        // Keep this key in sync with src/app.js to preserve existing preferences.
-        try { theme = localStorage.getItem("rmb-rebalancer-theme"); } catch {}
+        // Keep this key in sync with src/app.js.
+        try { theme = localStorage.getItem("zp-folio-theme"); } catch {}
         if (theme !== "dark" && theme !== "light") {
           theme = window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
         }
