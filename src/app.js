@@ -13,9 +13,9 @@ const $$ = selector => [...document.querySelectorAll(selector)];
 const THEME_KEY = "zp-folio-theme";
 const FUND_COLORS = ["var(--fund-1)", "var(--fund-2)", "var(--fund-3)", "var(--fund-4)"];
 const VIEW_TITLES = Object.freeze({
-  workspace: "组合工作台",
+  workspace: "工作台",
   plan: "执行方案",
-  rules: "再平衡规则"
+  rules: "规则"
 });
 const viewScroll = { workspace: 0, plan: 0, rules: 0 };
 
@@ -41,11 +41,11 @@ function renderFunds() {
       </td>
       <td class="numeric mono">${formatPercent(fund.targetBps / 10_000)}</td>
       <td class="numeric">
-        <label class="sr-only" for="holding-${index}">${fund.name}当前持仓（万 CNY）</label>
+        <label class="sr-only" for="holding-${index}">${fund.name}当前持仓（万）</label>
         <div class="table-input"><input id="holding-${index}" class="holding-input" type="text" inputmode="decimal" enterkeyhint="next" autocomplete="off" placeholder="0.0000" /><span>万</span></div>
       </td>
       <td class="numeric mono" data-weight="${index}">—</td>
-      <td><span class="state-pill is-pending" data-state="${index}">待输入</span></td>
+      <td><span class="state-pill is-pending" data-state="${index}">—</span></td>
     </tr>
   `).join("");
 }
@@ -60,7 +60,6 @@ function renderAllocationBase() {
       <span class="allocation-values"><b data-allocation-current="${index}">—</b><small>目标 ${formatPercent(targetWeights[index])}</small></span>
     </div>
   `).join("");
-  resetAllocation();
 }
 
 function renderBands() {
@@ -150,7 +149,7 @@ function applyBulkHoldings() {
   const values = input.value.trim().split(/[\s,，/、;；]+/).filter(Boolean);
   if (values.length !== FUNDS.length) {
     input.setAttribute("aria-invalid", "true");
-    showBanner("error", `批量填入需要 ${FUNDS.length} 个金额，目前识别到 ${values.length} 个。`);
+    showBanner("error", `需要 ${FUNDS.length} 项，已识别 ${values.length} 项。`);
     return;
   }
 
@@ -158,7 +157,7 @@ function applyBulkHoldings() {
     values.forEach((value, index) => parseWanAmount(value, { label: `${FUNDS[index].code} 当前持仓` }));
   } catch (error) {
     input.setAttribute("aria-invalid", "true");
-    showBanner("error", error.message || "批量金额格式不正确。");
+    showBanner("error", error.message || "金额格式有误。");
     return;
   }
 
@@ -167,11 +166,10 @@ function applyBulkHoldings() {
     holding.value = value;
     holding.removeAttribute("aria-invalid");
   });
-  input.removeAttribute("aria-invalid");
   closeBulkPanel({ returnFocus: false });
   invalidatePlan();
   updateLiveState();
-  showBanner("success", "已按基金顺序填入 4 项持仓。");
+  showBanner("success", `✓ 已填入 ${FUNDS.length} 项`);
   $("#cashFlowInput").focus();
 }
 
@@ -192,14 +190,13 @@ function setView(view) {
   requestAnimationFrame(() => window.scrollTo(0, viewScroll[view]));
 }
 
-function readForm({ quiet = false } = {}) {
+function readForm() {
   const holdings = FUNDS.map((fund, index) => {
     const input = `#holding-${index}`;
     try {
       return parseWanAmount($(input).value, { label: `${fund.code} 当前持仓` });
     } catch (error) {
       error.field = input;
-      if (!quiet) markInvalid(input);
       throw error;
     }
   });
@@ -212,7 +209,6 @@ function readForm({ quiet = false } = {}) {
     });
   } catch (error) {
     error.field = "#cashFlowInput";
-    if (!quiet) markInvalid(error.field);
     throw error;
   }
   return { holdings, flow };
@@ -221,7 +217,7 @@ function readForm({ quiet = false } = {}) {
 function updateLiveState() {
   let values;
   try {
-    values = readForm({ quiet: true });
+    values = readForm();
   } catch {
     resetLiveState();
     return;
@@ -241,16 +237,16 @@ function updateLiveState() {
       .sort((a, b) => Math.abs(b.deviation) - Math.abs(a.deviation))[0];
     $("#maxDeviation").textContent = formatSignedPercent(largest.deviation);
     $("#deviationFund").textContent = `${FUNDS[largest.index].code} 相对目标`;
-    $("#portfolioStatus").textContent = current.breached ? "存在越界" : "区间内";
+    $("#portfolioStatus").textContent = current.breached ? "越界" : "区间内";
     $("#portfolioStatus").className = `kpi-value kpi-status ${current.breached ? "negative" : "positive"}`;
-    $("#statusDetail").textContent = current.breached ? "本次计算将按资金变动类型处理" : "当前无需内部转换";
+    $("#statusDetail").textContent = current.breached ? "按资金流规则处理" : "无需内部转换";
 
     updateAllocation(current);
 
     current.rows.forEach((row, index) => {
       $(`[data-weight="${index}"]`).textContent = formatPercent(row.weight);
       const state = $(`[data-state="${index}"]`);
-      state.textContent = row.breached ? (row.deviation > 0 ? "高配越界" : "低配越界") : "区间内";
+      state.textContent = row.breached ? (row.deviation > 0 ? "高配 ↑" : "低配 ↓") : "区间内";
       state.className = `state-pill ${row.breached ? "is-breach" : "is-safe"}`;
     });
   } catch {
@@ -262,16 +258,16 @@ function resetLiveState() {
   $("#currentTotal").textContent = "—";
   $("#afterTotal").textContent = "—";
   $("#maxDeviation").textContent = "—";
-  $("#flowSummary").textContent = "等待输入";
-  $("#deviationFund").textContent = "相对目标比例";
+  $("#flowSummary").textContent = "—";
+  $("#deviationFund").textContent = "相对目标";
   $("#portfolioStatus").textContent = "等待输入";
   $("#portfolioStatus").className = "kpi-value kpi-status";
-  $("#statusDetail").textContent = "填写全部持仓后判断";
+  $("#statusDetail").textContent = "填写全部持仓";
   resetAllocation();
   FUNDS.forEach((_, index) => {
     $(`[data-weight="${index}"]`).textContent = "—";
     const state = $(`[data-state="${index}"]`);
-    state.textContent = "待输入";
+    state.textContent = "—";
     state.className = "state-pill is-pending";
   });
 }
@@ -281,7 +277,7 @@ function updateAllocation(current) {
   $("#currentRing").style.setProperty("--ring-gradient", allocationGradient(weights));
   $("#currentRing").classList.add("is-ready");
   $("#chartTotal").textContent = formatWan(current.total);
-  $("#chartState").textContent = current.breached ? "存在越界" : "全部在区间内";
+  $("#chartState").textContent = current.breached ? "越界" : "区间内";
   $("#chartState").className = current.breached ? "negative" : "positive";
   $("#allocationChart").setAttribute(
     "aria-label",
@@ -361,8 +357,8 @@ function renderPlan(plan) {
   $("#finalStatus").className = `kpi-value kpi-status ${finalBreachCodes.length ? "warning" : "positive"}`;
   $("#finalStatusDetail").textContent = finalBreachCodes.length
     ? finalBreachCodes.join("、")
-    : "4 只基金均在触发区间内";
-  $("#tradeCount").textContent = `${plan.tradeCount} 笔操作`;
+    : "全部在区间内";
+  $("#tradeCount").textContent = `${plan.tradeCount} 笔`;
 
   const activeIndexes = plan.trades.map((trade, index) => trade ? index : null).filter(index => index !== null);
   const unchangedIndexes = plan.trades.map((trade, index) => trade ? null : index).filter(index => index !== null);
@@ -371,9 +367,7 @@ function renderPlan(plan) {
   $("#noTrades").hidden = activeIndexes.length !== 0;
   $("#unchangedTrades").hidden = unchangedIndexes.length === 0;
   $("#unchangedTrades").open = false;
-  $("#unchangedSummary").textContent = activeIndexes.length
-    ? `另外 ${unchangedIndexes.length} 只基金无需操作`
-    : `${unchangedIndexes.length} 只基金均无需操作`;
+  $("#unchangedSummary").textContent = `${unchangedIndexes.length} 项保持`;
   $("#unchangedList").innerHTML = unchangedIndexes.map(index => `
     <div class="unchanged-item" data-testid="unchanged-item">
       <span><i style="--fund-color:${FUND_COLORS[index]}"></i><b>${FUNDS[index].code}</b>${FUNDS[index].name}</span>
@@ -399,10 +393,10 @@ function renderPlan(plan) {
     .filter(Boolean);
   $("#calculationList").innerHTML = `
     <div><dt>当前总额</dt><dd>${formatCurrency(plan.currentTotal)}</dd></div>
-    <div><dt>外部资金流</dt><dd>${formatCurrency(plan.flow, { signed: true })}</dd></div>
-    <div><dt>资金流后触发</dt><dd>${breachNames.length ? breachNames.join("、") : "无"}</dd></div>
-    <div><dt>基金间转换</dt><dd>${formatCurrency(plan.internalTurnover)}</dd></div>
-    <div><dt>最终总额</dt><dd>${formatCurrency(plan.finalTotal)}</dd></div>
+    <div><dt>资金变动</dt><dd>${formatCurrency(plan.flow, { signed: true })}</dd></div>
+    <div><dt>触发项</dt><dd>${breachNames.length ? breachNames.join("、") : "—"}</dd></div>
+    <div><dt>内部转换</dt><dd>${formatCurrency(plan.internalTurnover)}</dd></div>
+    <div><dt>调整后总额</dt><dd>${formatCurrency(plan.finalTotal)}</dd></div>
     <div><dt>金额守恒</dt><dd>买入 − 卖出 = ${formatCurrency(plan.flow, { signed: true })}</dd></div>
   `;
 }
@@ -428,23 +422,23 @@ function decisionCopy(plan) {
   if (plan.mode === "internal") {
     const codes = plan.breaches.map((value, index) => value ? FUNDS[index].code : null).filter(Boolean);
     return {
-      title: "执行资金变动，并完成一次内部转换",
-      text: `${codes.join("、")} 在资金流分配后严格越过 5 / 25 外层触发区间。方案将全部基金带回 80% 回调区间，并在金额守恒下保持最小内部换手。`,
-      badge: "需要转换",
+      title: plan.flow ? "资金变动 + 内部转换" : "内部转换",
+      text: `${codes.join("、")} 越过 5 / 25 区间 → 全部回调至 80% 区间，内部换手最小。`,
+      badge: "需转换",
       state: "safe"
     };
   }
   if (plan.mode === "flow") {
     return plan.flow > 0 ? {
-      title: "只需分配本次新增资金",
-      text: "新增资金按各基金相对目标的缺口比例分配；资金流后未越过 5 / 25 外层，因此不安排基金间转换。",
-      badge: "仅资金流",
+      title: "仅分配新增资金",
+      text: "按目标缺口补低配；未触发内部转换。",
+      badge: "仅新增",
       state: "safe"
     } : withdrawalDecisionCopy(plan);
   }
   return {
-    title: "当前无需调整",
-    text: "4 只基金均未越过各自 5 / 25 外层触发区间。80% 回调区间只在触发后使用，本次不产生基金间转换。",
+    title: "无需调整",
+    text: "全部在 5 / 25 区间内，无需交易。",
     badge: "保持",
     state: "safe"
   };
@@ -454,29 +448,23 @@ function withdrawalDecisionCopy(plan) {
   const codes = plan.finalBreaches
     .map((breached, index) => breached ? FUNDS[index].code : null)
     .filter(Boolean);
-  if (codes.length) {
-    return {
-      title: "只需按方案取出资金",
-      text: `本次按取现政策分配卖出金额。执行后 ${codes.join("、")} 仍在 5 / 25 外层触发区间外；按照取现政策，本次不追加基金间转换。`,
-      badge: "取现后仍越界",
-      state: "warning"
-    };
-  }
   return {
-    title: "只需按方案取出资金",
-    text: "本次按取现政策分配卖出金额。执行后 4 只基金均在 5 / 25 外层触发区间内，本次不需要基金间转换。",
-    badge: "仅资金流",
-    state: "safe"
+    title: "仅执行取出",
+    text: codes.length
+      ? `取出后 ${codes.join("、")} 仍越界；本次不追加内部转换。`
+      : "取出后全部在区间内，无需内部转换。",
+    badge: codes.length ? "取出后越界" : "仅取出",
+    state: codes.length ? "warning" : "safe"
   };
 }
 
 function tradeReason(plan, index) {
   const flowPart = plan.flowTrades[index];
   const internalPart = plan.internalTrades[index];
-  if (flowPart && internalPart) return "资金流纠偏 + 回调区间调整";
-  if (internalPart) return plan.breaches[index] ? "进入 80% 回调区间" : "回调区间配平";
-  if (flowPart) return plan.flow > 0 ? "按目标缺口分配新增资金" : "按取现政策分配";
-  return "无需操作";
+  if (flowPart && internalPart) return "资金流 + 回调";
+  if (internalPart) return plan.breaches[index] ? "80% 回调" : "回调配平";
+  if (flowPart) return plan.flow > 0 ? "补目标缺口" : "按取出顺序";
+  return "保持";
 }
 
 function clearInputs() {
@@ -499,7 +487,7 @@ function invalidatePlan() {
   $("#planContent").hidden = true;
   $("#planEmpty").hidden = false;
   $("#copyButton").disabled = true;
-  $("#copyButton").textContent = "复制方案";
+  $("#copyButton").textContent = "复制";
   $("#manualCopy").hidden = true;
 }
 
@@ -515,34 +503,34 @@ async function copyPlan() {
     area.hidden = false;
     area.focus();
     area.select();
-    showCopyFeedback("请手动复制");
+    showCopyFeedback("手动复制");
   }
 }
 
 function buildCopyText(plan) {
   const lines = [
-    `债基再平衡方案 v${VERSION}`,
+    `zp-folio · 执行方案 v${VERSION}`,
     `当前总额：${formatCurrency(plan.currentTotal)}`,
     `资金变动：${formatCurrency(plan.flow, { signed: true })}`,
     ""
   ];
   const activeTrades = plan.trades.map((trade, index) => ({ trade, index })).filter(item => item.trade);
-  if (!activeTrades.length) lines.push("本次无需操作");
+  if (!activeTrades.length) lines.push("无需交易");
   activeTrades.forEach(({ trade, index }) => {
     const action = trade > 0 ? `买入 ${formatCurrency(trade)}` : `卖出 ${formatCurrency(-trade)}`;
     lines.push(`${FUNDS[index].code} ${FUNDS[index].name}：${action}`);
   });
   const unchangedCount = FUNDS.length - activeTrades.length;
-  if (activeTrades.length && unchangedCount) lines.push(`其余 ${unchangedCount} 只基金保持不变`);
-  lines.push("", `基金间转换：${formatCurrency(plan.internalTurnover)}`);
-  lines.push("执行金额仅供参考，未计入相关费用及确认期间的净值变化。");
+  if (activeTrades.length && unchangedCount) lines.push(`其余 ${unchangedCount} 项保持`);
+  lines.push("", `内部转换：${formatCurrency(plan.internalTurnover)}`);
+  lines.push("仅供参考；未计入费用及净值变化。");
   return lines.join("\n");
 }
 
 function showCopyFeedback(text) {
   clearTimeout(copyResetTimer);
   $("#copyButton").textContent = text;
-  copyResetTimer = setTimeout(() => { $("#copyButton").textContent = "复制方案"; }, 1600);
+  copyResetTimer = setTimeout(() => { $("#copyButton").textContent = "复制"; }, 1600);
 }
 
 function showBanner(type, message) {
@@ -561,9 +549,9 @@ function markInvalid(selector) {
 }
 
 function flowLabel(flow) {
-  if (flow > 0) return `新增 ${formatWan(flow)}`;
-  if (flow < 0) return `取出 ${formatWan(-flow)}`;
-  return "无外部资金变动";
+  if (flow > 0) return `＋${formatWan(flow)}`;
+  if (flow < 0) return `−${formatWan(-flow)}`;
+  return "无变动";
 }
 
 function toggleTheme() {
@@ -593,7 +581,7 @@ function registerServiceWorker() {
 async function refreshVersion(button) {
   button.disabled = true;
   const label = button.querySelector("span:last-child");
-  if (label) label.textContent = "正在刷新";
+  if (label) label.textContent = "刷新中";
   try {
     if ("serviceWorker" in navigator) {
       const registration = await navigator.serviceWorker.getRegistration("./")

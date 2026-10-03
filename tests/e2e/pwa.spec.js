@@ -103,9 +103,9 @@ test("PWA 离线重新打开后仍能加载样式、生成方案并刷新版本"
   for (const [index, value] of ["50", "33.33", "12.5", "4.17"].entries()) {
     await page.locator(`#holding-${index}`).fill(value);
   }
-  await page.getByRole("button", { name: "生成再平衡方案" }).click();
-  await expect(page.locator("#decisionTitle")).toHaveText("当前无需调整");
-  await expect(page.locator("#internalTurnover")).toHaveText("CNY 0");
+  await page.getByRole("button", { name: "生成方案" }).click();
+  await expect(page.locator("#decisionTitle")).toHaveText("无需调整");
+  await expect(page.locator("#internalTurnover")).toHaveText("¥0");
 
   await context.setOffline(false);
   await page.locator(".side-nav [data-refresh-version]").click();
