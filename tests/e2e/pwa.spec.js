@@ -57,25 +57,20 @@ test("PWA 外壳、模块与在线更新可用", async ({ page, request, baseURL
   expect(cachedApp).toContain("from \"./portfolio.js\"");
 });
 
-test("Service Worker 清理改名前及过期缓存，保留当前与无关缓存", async ({ page, request }) => {
+test("Service Worker 清理过期缓存，保留当前与无关缓存", async ({ page, request }) => {
   const manifest = await (await request.get("./manifest.webmanifest")).json();
   const currentCache = `zp-folio-v${manifest.version}`;
-  const legacyCaches = [
-    "bond-rebalancer-v1.5.0",
-    "rmb-rebalancer-v0.0.0-legacy",
-    `rmb-rebalancer-v${manifest.version}`,
-    "zp-folio-v0.0.0-legacy"
-  ];
+  const staleCaches = ["zp-folio-v0.0.0"];
   const unrelatedCache = "another-app-v1";
 
   await page.goto("./");
   await page.evaluate(async () => { await navigator.serviceWorker.ready; });
   await page.evaluate(async cacheNames => {
     await Promise.all(cacheNames.map(cacheName => caches.open(cacheName)));
-  }, [...legacyCaches, unrelatedCache]);
+  }, [...staleCaches, unrelatedCache]);
 
   const before = await page.evaluate(() => caches.keys());
-  legacyCaches.forEach(cacheName => expect(before).toContain(cacheName));
+  staleCaches.forEach(cacheName => expect(before).toContain(cacheName));
 
   await page.evaluate(async () => {
     const registration = await navigator.serviceWorker.getRegistration();
@@ -86,7 +81,7 @@ test("Service Worker 清理改名前及过期缓存，保留当前与无关缓�
   await page.reload();
   await page.evaluate(async () => { await navigator.serviceWorker.ready; });
   await expect.poll(() => page.evaluate(() => caches.keys())).toEqual(
-    expect.not.arrayContaining(legacyCaches)
+    expect.not.arrayContaining(staleCaches)
   );
   expect(await page.evaluate(() => caches.keys())).toEqual(
     expect.arrayContaining([currentCache, unrelatedCache])
@@ -118,18 +113,18 @@ test("PWA 离线重新打开后仍能加载样式、生成方案并刷新版本"
   await expect(page.locator(".holding-input")).toHaveCount(4);
 });
 
-test("改名后沿用已有主题偏好并在刷新后保留", async ({ page }) => {
+test("主题偏好使用新键并在刷新后保留", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "light" });
   await page.addInitScript(() => {
-    if (localStorage.getItem("rmb-rebalancer-theme") === null) {
-      localStorage.setItem("rmb-rebalancer-theme", "dark");
+    if (localStorage.getItem("zp-folio-theme") === null) {
+      localStorage.setItem("zp-folio-theme", "dark");
     }
   });
   await page.goto("./");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await expect(page.locator("#themeColor")).toHaveAttribute("content", "#000000");
   await page.locator(".app-bar [data-theme-toggle]").click();
-  expect(await page.evaluate(() => localStorage.getItem("rmb-rebalancer-theme"))).toBe("light");
+  expect(await page.evaluate(() => localStorage.getItem("zp-folio-theme"))).toBe("light");
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 });

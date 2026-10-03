@@ -10,8 +10,7 @@ import { formatCurrency, formatPercent, formatSignedPercent, formatWan } from ".
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
-// Keep the existing key so a repository/path rename preserves the saved theme.
-const THEME_KEY = "rmb-rebalancer-theme";
+const THEME_KEY = "zp-folio-theme";
 const FUND_COLORS = ["var(--fund-1)", "var(--fund-2)", "var(--fund-3)", "var(--fund-4)"];
 const VIEW_TITLES = Object.freeze({
   workspace: "组合工作台",
