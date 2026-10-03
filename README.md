@@ -1,5 +1,7 @@
 # 债基再平衡助手
 
+[![Tests](https://github.com/zzpice/rmb-bond-rebalancer/actions/workflows/test.yml/badge.svg)](https://github.com/zzpice/rmb-bond-rebalancer/actions/workflows/test.yml)
+
 一个轻量、静态、本地计算的人民币债券基金再平衡工具。输入当前持仓和资金变动后，生成金额守恒、尽量少交易、容易执行的调整方案。
 
 👉 [在线使用](https://zzpice.github.io/rmb-bond-rebalancer/)
@@ -44,6 +46,10 @@ npm test
 持仓不会上传、写入数据库或保存在浏览器中；只有外观偏好会保存在本机。
 
 当前版本：**v2.2.0**
+
+## License
+
+本项目使用 [MIT License](./LICENSE)。
 
 ## Disclaimer
 
