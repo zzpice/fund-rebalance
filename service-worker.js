@@ -1,6 +1,7 @@
 const VERSION = "2.2.0";
-const CACHE_PREFIX = "rmb-rebalancer-";
-const LEGACY_CACHE_PREFIX = "bond-rebalancer-";
+const CACHE_PREFIX = "zp-folio-";
+// Cache Storage is shared across paths on the same origin; retire both old namespaces.
+const LEGACY_CACHE_PREFIXES = ["rmb-rebalancer-", "bond-rebalancer-"];
 const CACHE_NAME = `${CACHE_PREFIX}v${VERSION}`;
 const resolve = path => new URL(path, self.location.href).href;
 const INDEX_URL = resolve("./index.html");
@@ -34,7 +35,10 @@ self.addEventListener("activate", event => {
         keys
           .filter(key => (
             key !== CACHE_NAME
-            && (key.startsWith(CACHE_PREFIX) || key.startsWith(LEGACY_CACHE_PREFIX))
+            && (
+              key.startsWith(CACHE_PREFIX)
+              || LEGACY_CACHE_PREFIXES.some(prefix => key.startsWith(prefix))
+            )
           ))
           .map(key => caches.delete(key))
       ))
