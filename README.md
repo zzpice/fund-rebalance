@@ -51,19 +51,11 @@ npm run dev
 
 持仓不会上传、写入数据库或保存在浏览器中；只有外观偏好会保存在本机。
 
-## GitHub Pages 与仓库改名
+## PWA 与缓存兼容
 
-仓库名为 `zp-folio`，默认在线地址为 `https://zzpice.github.io/zp-folio/`。在 GitHub 仓库 **Settings → General → Repository name** 中完成改名，并在 **Settings → Pages** 中确认从 `main` 分支的 `/ (root)` 发布；现有测试工作流不承担 Pages 部署。更新仓库 **About → Website** 为新的在线地址，随后确认 Pages 构建成功和 Actions 测试通过。
+页面资源、模块导入、Service Worker 注册及缓存资源使用相对路径；manifest 的 `id`、`start_url`、`scope` 均为 `./`，兼容根路径和 `/zp-folio/` 子路径部署。
 
-页面资源、模块导入、Service Worker 注册及缓存资源都使用相对路径；manifest 的 `id`、`start_url`、`scope` 均保持 `./`，无需写死仓库路径，也不需要构建步骤或新增部署工作流。
-
-新 Service Worker 使用 `zp-folio-v<版本>` 缓存，只清理本项目的过期缓存。保留 `rmb-rebalancer-` 和 `bond-rebalancer-` 前缀用于删除历史缓存；主题设置继续使用 `rmb-rebalancer-theme`，以保留同一站点来源下的已有外观偏好。
-
-GitHub 仓库旧链接会重定向，但旧 GitHub Pages 地址不会自动重定向。请更新书签；已经安装的旧 PWA 仍指向旧路径，需要从新地址重新安装。本地已有克隆可在 GitHub 完成改名后执行：
-
-```bash
-git remote set-url origin https://github.com/zzpice/zp-folio.git
-```
+Service Worker 使用 `zp-folio-v<版本>` 缓存，仅清理本项目的过期缓存（含 `rmb-rebalancer-`、`bond-rebalancer-` 历史前缀）；外观偏好沿用 `rmb-rebalancer-theme`，保留同一站点来源下的已有设置。
 
 当前版本：**v2.2.0**
 
