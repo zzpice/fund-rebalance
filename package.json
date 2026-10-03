@@ -3,7 +3,7 @@
   "version": "2.2.0",
   "private": true,
   "type": "module",
-  "description": "A lightweight, local-first RMB bond fund rebalancing dashboard.",
+  "description": "A lightweight, local-first portfolio rebalancing dashboard.",
   "scripts": {
     "dev": "node tests/server.mjs",
     "test": "npm run test:unit && npm run test:e2e",

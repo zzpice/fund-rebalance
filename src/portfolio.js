@@ -159,5 +159,5 @@ export function assertPortfolio(amounts) {
 }
 
 function assertYuan(value, label) {
-  if (!Number.isSafeInteger(value)) throw new Error(`${label}须精确到 1 CNY。`);
+  if (!Number.isSafeInteger(value)) throw new Error(`${label}须为整数金额。`);
 }

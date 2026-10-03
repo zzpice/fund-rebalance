@@ -4,7 +4,7 @@ export function formatCurrency(value, { signed = false } = {}) {
   const amount = Math.abs(Math.round(value)).toLocaleString("zh-CN", {
     maximumFractionDigits: 0
   });
-  return `${sign}CNY ${amount}`;
+  return `${sign}¥${amount}`;
 }
 
 export function formatWan(value) {

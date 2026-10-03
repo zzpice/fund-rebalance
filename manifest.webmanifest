@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "债基再平衡助手",
-  "short_name": "再平衡助手",
-  "description": "输入当前持仓和资金变动，生成清晰、可靠、容易执行的人民币债券基金再平衡方案。",
+  "name": "zp-folio",
+  "short_name": "zp-folio",
+  "description": "填写持仓与资金变动，生成组合调整方案。本地计算，无需上传。",
   "version": "2.2.0",
   "lang": "zh-CN",
   "dir": "ltr",

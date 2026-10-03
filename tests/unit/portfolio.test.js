@@ -45,14 +45,14 @@ test("5 / 25 外层触发与 80% 回调区间使用统一公式", () => {
   assert.ok(Math.abs(bands[3].reentryHighWeight - 0.05004) < 1e-12);
 });
 
-test("边界属于安全区间，越过 1 CNY 才触发", () => {
+test("边界属于安全区间，越过 ¥1 才触发", () => {
   const onBoundary = snapshot([550_000, 283_300, 125_000, 41_700]);
   assert.equal(onBoundary.rows[0].breached, false);
   const outside = snapshot([550_001, 283_300, 124_999, 41_700]);
   assert.equal(outside.rows[0].breached, true);
 });
 
-test("万 CNY 输入精确到 1 CNY，并拒绝负持仓与过多小数", () => {
+test("万单位输入精确到个位，并拒绝负持仓与过多小数", () => {
   assert.equal(parseWanAmount("12.3456"), 123_456);
   assert.equal(parseWanAmount("900719925374.0993"), 9_007_199_253_740_993);
   assert.equal(parseWanAmount("-1.5", { allowNegative: true }), -15_000);

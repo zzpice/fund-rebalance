@@ -9,7 +9,7 @@ import {
 
 export function createRebalancePlan({ holdings, flow = 0 }) {
   assertPortfolio(holdings);
-  if (!Number.isSafeInteger(flow)) throw new Error("资金变动须精确到 1 CNY。");
+  if (!Number.isSafeInteger(flow)) throw new Error("资金变动须为整数金额。");
 
   const currentTotal = sum(holdings);
   const finalTotal = currentTotal + flow;

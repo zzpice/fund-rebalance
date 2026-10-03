@@ -45,12 +45,12 @@ test("新增资金只用于补足目标缺口且不制造内部转换", () => {
   assert.deepEqual(plan.final, plan.targets);
 });
 
-test("取现策略显式声明短债、纯债优先，固收增强承担剩余提款", () => {
+test("取出顺序显式声明两项优先、其余比例分配", () => {
   assert.deepEqual(WITHDRAWAL_POLICY.liquidityOrder, ["007194", "270048"]);
   assert.deepEqual(WITHDRAWAL_POLICY.residualProRata, ["002065", "110017"]);
 });
 
-test("取出资金按已有高配、短债、纯债、增强债顺序分配且不内部转换", () => {
+test("取出资金按已有高配与既定顺序分配且不内部转换", () => {
   const cases = [
     {
       holdings: [600_000, 399_960, 150_000, 50_040],
@@ -90,7 +90,7 @@ test("取出资金按已有高配、短债、纯债、增强债顺序分配且�
   }
 });
 
-test("刚越过外层 1 CNY 时进入 80% 回调区间并保持最小换手", () => {
+test("刚越过外层 ¥1 时进入 80% 回调区间并保持最小换手", () => {
   const plan = createRebalancePlan({
     holdings: [550_001, 283_300, 124_999, 41_700],
     flow: 0

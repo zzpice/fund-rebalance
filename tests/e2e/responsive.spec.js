@@ -35,7 +35,7 @@ for (const viewport of [
       await expect(page.locator("#bulkToggle")).toHaveCSS("white-space", "nowrap");
     }
 
-    await page.getByRole("button", { name: "生成再平衡方案" }).click();
+    await page.getByRole("button", { name: "生成方案" }).click();
 
     if (viewport.width <= 700) {
       await expectNoInternalHorizontalScroll(page.locator(".execution-card .table-scroll"));

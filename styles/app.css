@@ -281,7 +281,6 @@ html[data-theme="dark"] .nav-button.is-active {
   padding: 27px 24px 36px;
 }
 
-.page-heading,
 .section-heading {
   display: flex;
   align-items: flex-start;
@@ -289,52 +288,12 @@ html[data-theme="dark"] .nav-button.is-active {
   gap: 20px;
 }
 
-.page-heading {
-  margin-bottom: 18px;
-}
-
-.page-heading h1,
 .section-heading h2 {
   margin: 2px 0 4px;
   color: var(--ink);
-  font-size: clamp(25px, 3vw, 34px);
+  font-size: clamp(23px, 2.5vw, 29px);
   line-height: 1.18;
   letter-spacing: -0.035em;
-}
-
-.section-heading h2 {
-  font-size: clamp(23px, 2.5vw, 29px);
-}
-
-.page-heading p {
-  max-width: 760px;
-  margin: 0;
-  color: var(--muted);
-  font-size: 16px;
-}
-
-.section-label {
-  margin: 0;
-  color: var(--accent);
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 900;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
-
-.rule-chip {
-  display: inline-flex;
-  align-items: center;
-  min-height: 32px;
-  padding: 5px 10px;
-  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
-  border-radius: 999px;
-  color: var(--accent);
-  background: var(--accent-soft);
-  font-size: 13px;
-  font-weight: 900;
-  white-space: nowrap;
 }
 
 .status-banner {
@@ -1167,12 +1126,6 @@ html[data-theme="dark"] .button-primary {
   font-size: 13px;
 }
 
-.no-trades p {
-  margin: 1px 0 0;
-  color: var(--muted);
-  font-size: 12px;
-}
-
 .unchanged-trades {
   border-top: 1px solid var(--line);
   background: var(--surface-low);
@@ -1580,13 +1533,8 @@ html[data-theme="dark"] .button-primary {
     min-height: 44px;
   }
 
-  .page-heading,
   .section-heading {
     display: grid;
-  }
-
-  .rule-chip {
-    justify-self: start;
   }
 
   .kpi-grid {
@@ -1850,10 +1798,6 @@ html[data-theme="dark"] .button-primary {
 
   .brand-copy small {
     display: none;
-  }
-
-  .page-heading p {
-    font-size: 14px;
   }
 
   .kpi-grid {
