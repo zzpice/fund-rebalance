@@ -7,8 +7,12 @@ import path from "node:path";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const hostIndex = process.argv.indexOf("--host");
 const portIndex = process.argv.indexOf("--port");
+const basePathIndex = process.argv.indexOf("--base-path");
 const host = hostIndex >= 0 ? process.argv[hostIndex + 1] : "127.0.0.1";
 const port = Number(portIndex >= 0 ? process.argv[portIndex + 1] : process.env.PORT || 4173);
+const basePath = basePathIndex >= 0
+  ? path.posix.join("/", process.argv[basePathIndex + 1], "/")
+  : "/";
 
 const TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -24,6 +28,11 @@ const TYPES = {
 createServer(async (req, res) => {
   try {
     let urlPath = decodeURIComponent(new URL(req.url, "http://localhost").pathname);
+    if (!urlPath.startsWith(basePath)) {
+      res.writeHead(404).end("not found");
+      return;
+    }
+    urlPath = "/" + urlPath.slice(basePath.length);
     if (urlPath.endsWith("/")) urlPath += "index.html";
     const filePath = path.resolve(root, "." + path.normalize(urlPath));
     if (!filePath.startsWith(root)) {
@@ -40,5 +49,5 @@ createServer(async (req, res) => {
     res.writeHead(404).end("not found");
   }
 }).listen(port, host, () => {
-  console.log(`test server listening on http://${host}:${port}/`);
+  console.log(`test server listening on http://${host}:${port}${basePath}`);
 });
