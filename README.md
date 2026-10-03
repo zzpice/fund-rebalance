@@ -1,10 +1,13 @@
 # zp-folio
 
+> 本地优先的投资组合再平衡工具。输入持仓与资金变动，即时生成调整方案与执行清单。
+
 [![Tests](https://github.com/zzpice/zp-folio/actions/workflows/test.yml/badge.svg)](https://github.com/zzpice/zp-folio/actions/workflows/test.yml)
+[![License](https://img.shields.io/github/license/zzpice/zp-folio)](./LICENSE)
 
-本地计算的组合调整工具：填写持仓与资金变动 → 生成执行清单。支持批量输入、配置图和方案复制。
+**[→ 在线使用 zp-folio](https://zzpice.github.io/zp-folio/)**
 
-👉 [在线使用](https://zzpice.github.io/zp-folio/) · [GitHub 仓库](https://github.com/zzpice/zp-folio)
+无需登录、无需后端，持仓数据只在浏览器本地参与计算。支持批量输入、配置图、方案复制、PWA 安装与离线使用。
 
 ## 组合
 
