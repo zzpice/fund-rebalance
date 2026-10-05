@@ -24,8 +24,12 @@ export function formatPercent(value, digits = 2) {
   })}%`;
 }
 
-export function formatSignedPercent(value, digits = 2) {
+export function formatSignedPoints(value, digits = 2) {
   if (!Number.isFinite(value)) return "—";
-  const prefix = value > 0 ? "+" : value < 0 ? "−" : "";
-  return prefix + formatPercent(Math.abs(value), digits);
+  const points = Number((value * 100).toFixed(digits));
+  const prefix = points > 0 ? "+" : points < 0 ? "−" : "";
+  return prefix + Math.abs(points).toLocaleString("zh-CN", {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits
+  });
 }

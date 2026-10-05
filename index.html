@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" id="themeColor" content="#f5f7fb" />
-    <meta name="description" content="填写持仓与资金变动，生成组合调整方案。本地计算，无需上传。" />
+    <meta name="description" content="固定四基金的本地再平衡工具。填写持仓与资金变动，生成调整方案；持仓不上传、不保存。" />
     <meta name="application-name" content="zp-folio" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -34,7 +34,7 @@
           <img class="brand-mark" src="./icons/icon.svg" alt="" width="38" height="38" />
           <span class="brand-copy">
             <strong>zp-folio</strong>
-            <small>v2.3.0</small>
+            <small>v2.3.1</small>
           </span>
         </div>
 
@@ -64,7 +64,7 @@
           <div class="mobile-bar-main">
             <div class="brand">
               <img class="brand-mark" src="./icons/icon.svg" alt="" width="38" height="38" />
-              <span class="brand-copy"><strong>zp-folio</strong><small>v2.3.0</small></span>
+              <span class="brand-copy"><strong>zp-folio</strong><small>v2.3.1</small></span>
             </div>
             <div class="mobile-actions">
               <button class="icon-button" type="button" data-refresh-version aria-label="刷新">↻</button>
@@ -84,8 +84,9 @@
         </header>
 
         <div class="dashboard-content">
+          <div class="status-banner" id="statusBanner" role="status" aria-live="polite" hidden></div>
           <section data-view-panel="workspace">
-            <div class="status-banner" id="statusBanner" role="status" aria-live="polite" hidden></div>
+            <p class="workspace-intro">固定四基金的再平衡工具。填写当前持仓与资金变动，再生成执行方案；持仓不上传、不保存。</p>
 
             <section class="overview-grid" aria-label="组合概览">
               <article class="allocation-card">
@@ -119,12 +120,12 @@
                   <small id="flowSummary">—</small>
                 </article>
                 <article class="kpi-card">
-                  <span class="kpi-label">最大偏离</span>
+                  <span class="kpi-label">最大偏离（百分点）</span>
                   <strong class="kpi-value" id="maxDeviation">—</strong>
                   <small id="deviationFund">相对目标</small>
                 </article>
                 <article class="kpi-card is-featured">
-                  <span class="kpi-label">组合状态</span>
+                  <span class="kpi-label">当前组合状态</span>
                   <strong class="kpi-value kpi-status" id="portfolioStatus">等待输入</strong>
                   <small id="statusDetail">填写全部持仓</small>
                 </article>
@@ -134,7 +135,7 @@
             <section class="grid-12 input-grid" aria-label="持仓与资金变动">
               <article class="table-card span-8">
                 <header class="card-header">
-                  <div><h2>当前持仓</h2><p>单位：万 · 最多 4 位小数</p></div>
+                  <div><h2>当前持仓</h2><p>单位：万 · 最多 4 位小数 · 无持仓填 0</p></div>
                   <button class="button button-secondary button-compact" id="bulkToggle" type="button" aria-expanded="false" aria-controls="bulkPanel">批量输入</button>
                 </header>
                 <div class="bulk-panel" id="bulkPanel" hidden>
@@ -156,12 +157,12 @@
               <article class="dashboard-card span-4">
                 <header class="card-header">
                   <div><h2>资金变动</h2></div>
-                  <button class="button button-secondary" id="clearButton" type="button">清空</button>
+                  <button class="button button-secondary" id="clearButton" type="button">清空全部</button>
                 </header>
                 <label class="field" for="cashFlowInput">
                   <span>＋新增 / −取出（万）</span>
-                  <div class="input-shell"><input id="cashFlowInput" type="text" inputmode="decimal" enterkeyhint="go" autocomplete="off" value="0" aria-describedby="cashFlowHelp" /><b>万</b></div>
-                  <small id="cashFlowHelp">+5 新增 · -5 取出</small>
+                  <div class="input-shell"><input id="cashFlowInput" type="text" inputmode="text" enterkeyhint="go" autocomplete="off" autocapitalize="off" spellcheck="false" value="0" aria-describedby="cashFlowHelp" /><b>万</b></div>
+                  <small id="cashFlowHelp">+5 新增 · -5 取出 · 无变动填 0</small>
                 </label>
               </article>
 
@@ -180,7 +181,7 @@
 
             <div class="empty-panel" id="planEmpty">
               <span class="empty-icon" aria-hidden="true">↗</span>
-              <div><strong>暂无方案</strong><p>先在工作台填写持仓与资金变动。</p></div>
+              <div><strong>暂无方案</strong><p>在工作台填写持仓与资金变动，然后点击“生成方案”。</p></div>
             </div>
 
             <div id="planContent" hidden>
@@ -236,6 +237,12 @@
                   <li><span>02</span><div><b>＋新增</b><p>按目标缺口补低配；仍越界 → 内部转换。</p></div></li>
                   <li><span>03</span><div><b>−取出</b><p>先纠正原有高配；再按 007194 → 270048 取出，剩余由 002065 / 110017 按持仓比例分配。不追加内部转换，允许暂时越界。</p></div></li>
                 </ol>
+              </article>
+              <article class="dashboard-card local-use">
+                <header class="card-header"><h3>本地使用与安装</h3></header>
+                <p>持仓只用于本次计算，不上传、不保存；仅保存外观偏好。刷新或关闭页面后需重新填写。</p>
+                <p>可通过支持安装的浏览器菜单安装此应用；iPhone / iPad 可在 Safari 的分享菜单中选择“添加到主屏幕”。首次在线打开并完成缓存后，可离线使用。</p>
+                <p>“刷新”会检查版本并重新加载页面，清空本次输入；离线时继续使用已缓存版本。</p>
               </article>
             </div>
           </section>

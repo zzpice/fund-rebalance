@@ -1,9 +1,9 @@
 {
   "name": "zp-folio",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "private": true,
   "type": "module",
-  "description": "A lightweight, local-first portfolio rebalancing dashboard.",
+  "description": "A local-first rebalancing tool for a fixed four-fund portfolio.",
   "scripts": {
     "dev": "node tests/server.mjs",
     "test": "npm run test:unit && npm run test:e2e",

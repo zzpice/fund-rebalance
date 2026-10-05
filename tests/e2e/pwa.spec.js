@@ -88,7 +88,7 @@ test("Service Worker 清理过期缓存，保留当前与无关缓存", async ({
   );
 });
 
-test("PWA 离线重新打开后仍能加载样式、生成方案并刷新版本", async ({ page, context }) => {
+test("PWA 离线可计算，更新失败保留方案，联网后可刷新版本", async ({ page, context }) => {
   await page.goto("./");
   await page.evaluate(async () => {
     await navigator.serviceWorker.ready;
@@ -106,6 +106,13 @@ test("PWA 离线重新打开后仍能加载样式、生成方案并刷新版本"
   await page.getByRole("button", { name: "生成方案" }).click();
   await expect(page.locator("#decisionTitle")).toHaveText("无需调整");
   await expect(page.locator("#internalTurnover")).toHaveText("¥0");
+
+  await page.locator(".side-nav [data-refresh-version]").click();
+  await expect(page.locator("#statusBanner")).toContainText("本次输入与方案已保留");
+  await expect(page.locator("#statusBanner")).toBeInViewport();
+  await expect(page.locator("#holding-0")).toHaveValue("50");
+  await expect(page.locator("#planContent")).toBeVisible();
+  await expect(page.locator(".side-nav [data-refresh-version]")).toBeEnabled();
 
   await context.setOffline(false);
   await page.locator(".side-nav [data-refresh-version]").click();

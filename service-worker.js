@@ -1,4 +1,4 @@
-const VERSION = "2.3.0";
+const VERSION = "2.3.1";
 const CACHE_PREFIX = "zp-folio-";
 const CACHE_NAME = `${CACHE_PREFIX}v${VERSION}`;
 const resolve = path => new URL(path, self.location.href).href;
