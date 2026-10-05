@@ -30,6 +30,16 @@ test("PWA 外壳、模块与在线更新可用", async ({ page, request, baseURL
   const cacheName = `zp-folio-v${manifest.version}`;
 
   await page.goto("./");
+  const iconURLs = [...new Set(manifest.icons.map(icon => new URL(icon.src, appURL).href))];
+  iconURLs.push(new URL("./icons/apple-touch-icon.png", appURL).href);
+  await page.evaluate(async urls => {
+    for (const url of urls) {
+      const icon = new Image();
+      icon.src = url;
+      await icon.decode();
+      if (!icon.naturalWidth || !icon.naturalHeight) throw new Error(`图标无法解码：${url}`);
+    }
+  }, iconURLs);
   const registration = await page.evaluate(async () => {
     const ready = await navigator.serviceWorker.ready;
     return { scope: ready.scope, active: Boolean(ready.active), scriptURL: ready.active?.scriptURL };
