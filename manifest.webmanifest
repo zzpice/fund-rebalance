@@ -3,7 +3,7 @@
   "name": "zp-folio",
   "short_name": "zp-folio",
   "description": "填写持仓与资金变动，生成组合调整方案。本地计算，无需上传。",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "lang": "zh-CN",
   "dir": "ltr",
   "start_url": "./",

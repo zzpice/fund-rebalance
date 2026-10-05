@@ -53,6 +53,6 @@ npm run dev
 
 缓存：`zp-folio-v<版本>`，仅清理同前缀的过期版本。主题键：`zp-folio-theme`。
 
-当前版本：**v2.2.0**
+当前版本：**v2.3.0**
 
 [MIT License](./LICENSE)。仅供配置计算，不构成投资建议。
