@@ -4,4 +4,5 @@
 - 这是固定四基金、固定规则的本地优先再平衡工具，不自行泛化为通用投资平台。
 - 计算逻辑必须保持整数金额守恒；修改 `src/portfolio.js` 或 `src/rebalance.js` 时必须同步补充或更新测试。
 - 提交前运行 `npm test`，版本相关改动须保持页面、package、manifest、模块与 Service Worker 一致。
+- GitHub Release 标题统一使用英文，格式为 `vX.Y.Z — English Title`；Release Notes 正文可以使用中文。
 - 不增加后端、登录、云同步、行情接口或远程持久化，除非用户明确要求。
