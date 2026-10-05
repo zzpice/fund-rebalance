@@ -1,6 +1,6 @@
 # zp-folio
 
-> 本地优先的投资组合再平衡工具。输入持仓与资金变动，即时生成调整方案与执行清单。
+> 固定四基金、固定目标比例的本地再平衡工具。输入持仓与资金变动，生成调整方案与执行清单。
 
 [![Tests](https://github.com/zzpice/zp-folio/actions/workflows/test.yml/badge.svg)](https://github.com/zzpice/zp-folio/actions/workflows/test.yml)
 [![License](https://img.shields.io/github/license/zzpice/zp-folio)](./LICENSE)
@@ -30,7 +30,17 @@
 
 每次独立计算，仅使用当前持仓与本次资金变动。
 
-## 使用与开发
+## 使用
+
+1. 填写以上四只基金的当前持仓，无持仓填 `0`。单位为“万”，最多 4 位小数。
+2. 填写本次资金变动：正数新增、负数取出，无变动填 `0`。
+3. 点击“生成方案”，查看执行清单；可复制方案，修改输入后需重新生成。
+
+持仓不上传、不保存；本机仅保存主题偏好。刷新或关闭页面后需重新填写。
+
+支持安装的浏览器可通过菜单安装此应用；iPhone / iPad 可在 Safari 的分享菜单中选择“添加到主屏幕”。首次在线打开并完成缓存后，可离线重新打开和计算。“刷新”会检查版本并清空本次输入；检查更新失败时保留输入和方案。
+
+## 开发
 
 静态页面，无需构建。支持 GitHub Pages 与 PWA。
 
@@ -45,14 +55,10 @@ npm run dev
 
 开发地址：`http://127.0.0.1:4173/`。测试覆盖计算规则、浏览器交互，以及根路径和 `/zp-folio/` 下的 PWA 更新与离线使用。
 
-持仓不上传、不保存；本机仅保存主题偏好。
-
-## PWA 与缓存
-
 资源和 Service Worker 使用相对路径；manifest 的 `id`、`start_url`、`scope` 均为 `./`。
 
 缓存：`zp-folio-v<版本>`，仅清理同前缀的过期版本。主题键：`zp-folio-theme`。
 
-当前版本：**v2.3.0**
+当前版本：**[v2.3.1](https://github.com/zzpice/zp-folio/releases/tag/v2.3.1)**
 
 [MIT License](./LICENSE)。仅供配置计算，不构成投资建议。

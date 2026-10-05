@@ -1,4 +1,4 @@
-export const VERSION = "2.3.0";
+export const VERSION = "2.3.1";
 const YUAN_PER_WAN = 10_000;
 const WEIGHT_SCALE = 10_000;
 

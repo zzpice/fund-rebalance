@@ -6,7 +6,7 @@ import {
   snapshot
 } from "./portfolio.js";
 import { createRebalancePlan } from "./rebalance.js";
-import { formatCurrency, formatPercent, formatSignedPercent, formatWan } from "./format.js";
+import { formatCurrency, formatPercent, formatSignedPoints, formatWan } from "./format.js";
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
@@ -190,8 +190,8 @@ function setView(view) {
   requestAnimationFrame(() => window.scrollTo(0, viewScroll[view]));
 }
 
-function readForm() {
-  const holdings = FUNDS.map((fund, index) => {
+function readHoldings() {
+  return FUNDS.map((fund, index) => {
     const input = `#holding-${index}`;
     try {
       return parseWanAmount($(input).value, { label: `${fund.code} 当前持仓` });
@@ -200,10 +200,11 @@ function readForm() {
       throw error;
     }
   });
+}
 
-  let flow;
+function readFlow() {
   try {
-    flow = parseWanAmount($("#cashFlowInput").value, {
+    return parseWanAmount($("#cashFlowInput").value, {
       label: "资金变动",
       allowNegative: true
     });
@@ -211,47 +212,50 @@ function readForm() {
     error.field = "#cashFlowInput";
     throw error;
   }
-  return { holdings, flow };
+}
+
+function readForm() {
+  return { holdings: readHoldings(), flow: readFlow() };
 }
 
 function updateLiveState() {
-  let values;
+  let current;
   try {
-    values = readForm();
+    current = snapshot(readHoldings());
   } catch {
     resetLiveState();
     return;
   }
 
+  $("#currentTotal").textContent = formatWan(current.total);
   try {
-    const current = snapshot(values.holdings);
-    const after = current.total + values.flow;
+    const flow = readFlow();
+    const after = current.total + flow;
     if (after <= 0) throw new Error();
-
-    $("#currentTotal").textContent = formatWan(current.total);
     $("#afterTotal").textContent = formatWan(after);
-    $("#flowSummary").textContent = flowLabel(values.flow);
-
-    const largest = current.rows
-      .map((row, index) => ({ ...row, index }))
-      .sort((a, b) => Math.abs(b.deviation) - Math.abs(a.deviation))[0];
-    $("#maxDeviation").textContent = formatSignedPercent(largest.deviation);
-    $("#deviationFund").textContent = `${FUNDS[largest.index].code} 相对目标`;
-    $("#portfolioStatus").textContent = current.breached ? "越界" : "区间内";
-    $("#portfolioStatus").className = `kpi-value kpi-status ${current.breached ? "negative" : "positive"}`;
-    $("#statusDetail").textContent = current.breached ? "按资金流规则处理" : "无需内部转换";
-
-    updateAllocation(current);
-
-    current.rows.forEach((row, index) => {
-      $(`[data-weight="${index}"]`).textContent = formatPercent(row.weight);
-      const state = $(`[data-state="${index}"]`);
-      state.textContent = row.breached ? (row.deviation > 0 ? "高配 ↑" : "低配 ↓") : "区间内";
-      state.className = `state-pill ${row.breached ? "is-breach" : "is-safe"}`;
-    });
+    $("#flowSummary").textContent = flowLabel(flow);
   } catch {
-    resetLiveState();
+    $("#afterTotal").textContent = "—";
+    $("#flowSummary").textContent = "检查资金变动";
   }
+
+  const largest = current.rows
+    .map((row, index) => ({ ...row, index }))
+    .sort((a, b) => Math.abs(b.deviation) - Math.abs(a.deviation))[0];
+  $("#maxDeviation").textContent = formatSignedPoints(largest.deviation);
+  $("#deviationFund").textContent = `${FUNDS[largest.index].code} 相对目标`;
+  $("#portfolioStatus").textContent = current.breached ? "越界" : "区间内";
+  $("#portfolioStatus").className = `kpi-value kpi-status ${current.breached ? "negative" : "positive"}`;
+  $("#statusDetail").textContent = current.breached ? "生成方案查看调整" : "当前持仓在区间内";
+
+  updateAllocation(current);
+
+  current.rows.forEach((row, index) => {
+    $(`[data-weight="${index}"]`).textContent = formatPercent(row.weight);
+    const state = $(`[data-state="${index}"]`);
+    state.textContent = row.breached ? (row.deviation > 0 ? "高配 ↑" : "低配 ↓") : "区间内";
+    state.className = `state-pill ${row.breached ? "is-breach" : "is-safe"}`;
+  });
 }
 
 function resetLiveState() {
@@ -327,7 +331,7 @@ function generatePlan() {
     setView("plan");
     requestAnimationFrame(() => $("#planHeading").focus({ preventScroll: true }));
   } catch (error) {
-    activePlan = null;
+    invalidatePlan();
     showBanner("error", error.message || "无法生成方案，请检查输入。");
     if (error.field) {
       markInvalid(error.field);
@@ -394,7 +398,7 @@ function renderPlan(plan) {
   $("#calculationList").innerHTML = `
     <div><dt>当前总额</dt><dd>${formatCurrency(plan.currentTotal)}</dd></div>
     <div><dt>资金变动</dt><dd>${formatCurrency(plan.flow, { signed: true })}</dd></div>
-    <div><dt>触发项</dt><dd>${breachNames.length ? breachNames.join("、") : "—"}</dd></div>
+    <div><dt>资金变动后越界项</dt><dd>${breachNames.length ? breachNames.join("、") : "—"}</dd></div>
     <div><dt>内部转换</dt><dd>${formatCurrency(plan.internalTurnover)}</dd></div>
     <div><dt>调整后总额</dt><dd>${formatCurrency(plan.finalTotal)}</dd></div>
     <div><dt>金额守恒</dt><dd>买入 − 卖出 = ${formatCurrency(plan.flow, { signed: true })}</dd></div>
@@ -423,7 +427,7 @@ function decisionCopy(plan) {
     const codes = plan.breaches.map((value, index) => value ? FUNDS[index].code : null).filter(Boolean);
     return {
       title: plan.flow ? "资金变动 + 内部转换" : "内部转换",
-      text: `${codes.join("、")} 越过 5 / 25 区间 → 全部回调至 80% 区间，内部换手最小。`,
+      text: `${codes.join("、")} 越过触发区间；全部回调至目标 ± 80% × 容差，内部换手最小。`,
       badge: "需转换",
       state: "safe"
     };
@@ -438,7 +442,7 @@ function decisionCopy(plan) {
   }
   return {
     title: "无需调整",
-    text: "全部在 5 / 25 区间内，无需交易。",
+    text: "当前持仓均在触发区间内，无需交易。",
     badge: "保持",
     state: "safe"
   };
@@ -508,10 +512,15 @@ async function copyPlan() {
 }
 
 function buildCopyText(plan) {
+  const decision = decisionCopy(plan);
   const lines = [
     `zp-folio · 执行方案 v${VERSION}`,
     `当前总额：${formatCurrency(plan.currentTotal)}`,
     `资金变动：${formatCurrency(plan.flow, { signed: true })}`,
+    `调整后总额：${formatCurrency(plan.finalTotal)}`,
+    "",
+    decision.title,
+    decision.text,
     ""
   ];
   const activeTrades = plan.trades.map((trade, index) => ({ trade, index })).filter(item => item.trade);
@@ -579,6 +588,10 @@ function registerServiceWorker() {
 }
 
 async function refreshVersion(button) {
+  if (!navigator.onLine) {
+    showBanner("error", "当前处于离线状态，无法检查更新。本次输入与方案已保留。");
+    return;
+  }
   button.disabled = true;
   const label = button.querySelector("span:last-child");
   if (label) label.textContent = "刷新中";
@@ -594,7 +607,12 @@ async function refreshVersion(button) {
         await Promise.race([reload, new Promise(resolve => setTimeout(resolve, 1800))]);
       }
     }
+  } catch {
+    showBanner("error", "未能检查更新，请检查网络后重试。本次输入与方案已保留。");
+    return;
   } finally {
-    window.location.reload();
+    button.disabled = false;
+    if (label) label.textContent = "刷新";
   }
+  window.location.reload();
 }

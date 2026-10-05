@@ -113,3 +113,53 @@ test("Enter 按输入顺序前进并从资金变动直接生成方案", async ({
   await expect(page.locator("#planHeading")).toBeFocused();
   await expect(page.locator("#planContent")).toBeVisible();
 });
+
+test("手机端生成失败时能看到错误，资金错误不抹去有效持仓概览", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await fillHoldings(page, ["60", "40", "15", "5"]);
+  await expect(page.locator("#maxDeviation")).toHaveText("0.00");
+  await page.locator("#cashFlowInput").fill("-120");
+  await page.getByRole("button", { name: "生成方案" }).click();
+  await expect(page.locator("#statusBanner")).toContainText("必须大于 0");
+  await expect(page.locator("#statusBanner")).toBeInViewport();
+  await expect(page.locator("#currentTotal")).toHaveText("120 万");
+  await expect(page.locator("#portfolioStatus")).toHaveText("区间内");
+  await expect(page.locator("#flowSummary")).toHaveText("检查资金变动");
+
+  await page.locator("#cashFlowInput").fill("abc");
+  await page.getByRole("button", { name: "生成方案" }).click();
+  await expect(page.locator("#cashFlowInput")).toHaveAttribute("aria-invalid", "true");
+  await expect(page.locator("#statusBanner")).toBeInViewport();
+  await expect(page.locator("#planContent")).toBeHidden();
+
+  await page.getByRole("button", { name: "批量输入" }).click();
+  await page.locator("#bulkHoldingsInput").fill("60 40 15");
+  await page.getByRole("button", { name: "应用", exact: true }).click();
+  await expect(page.locator("#statusBanner")).toContainText("已识别 3 项");
+  await expect(page.locator("#statusBanner")).toBeInViewport();
+});
+
+test("复制和手动复制均保留取现后的越界说明", async ({ page, context }) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/");
+  await fillHoldings(page, ["60", "40", "15", "5"]);
+  await page.locator("#cashFlowInput").fill("-8");
+  await page.getByRole("button", { name: "生成方案" }).click();
+  const decision = await page.locator("#decisionText").textContent();
+  await page.locator("#copyButton").click();
+  await expect(page.locator("#copyButton")).toHaveText("已复制");
+  const copied = await page.evaluate(() => navigator.clipboard.readText());
+  expect(copied).toContain(decision);
+  expect(copied).toContain("调整后总额：¥1,120,000");
+  expect(copied).toContain("007194 长城短债 A：卖出 ¥50,000");
+
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText: async () => { throw new Error("unavailable"); } }
+    });
+  });
+  await page.locator("#copyButton").click();
+  await expect(page.locator("#manualCopy")).toBeVisible();
+  await expect(page.locator("#manualCopy")).toHaveValue(copied);
+});

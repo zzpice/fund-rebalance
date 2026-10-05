@@ -297,12 +297,31 @@ html[data-theme="dark"] .nav-button.is-active {
 }
 
 .status-banner {
+  position: sticky;
+  top: 70px;
+  z-index: 25;
   margin-bottom: 16px;
   padding: 12px 14px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   font-size: 14px;
   font-weight: 700;
+}
+
+.workspace-intro {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.local-use {
+  grid-column: 1 / -1;
+}
+
+.local-use p {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 14px;
 }
 
 .status-banner.is-success {
@@ -833,7 +852,8 @@ a.fund-name:hover strong {
 
 input[aria-invalid="true"],
 textarea[aria-invalid="true"],
-.table-input:has(input[aria-invalid="true"]) {
+.table-input:has(input[aria-invalid="true"]),
+.input-shell:has(input[aria-invalid="true"]) {
   border-color: var(--negative);
 }
 
@@ -1452,6 +1472,10 @@ html[data-theme="dark"] .button-primary {
 }
 
 @media (max-width: 980px) {
+  .status-banner {
+    top: calc(114px + env(safe-area-inset-top));
+  }
+
   .side-nav {
     display: none;
   }
@@ -1522,6 +1546,21 @@ html[data-theme="dark"] .button-primary {
 }
 
 @media (max-width: 700px) {
+  [data-view-panel="workspace"] {
+    display: flex;
+    flex-direction: column;
+  }
+
+  [data-view-panel="workspace"] .input-grid {
+    order: 1;
+    margin-top: 0;
+  }
+
+  [data-view-panel="workspace"] .overview-grid {
+    order: 2;
+    margin-top: 16px;
+  }
+
   .icon-button {
     width: 44px;
     height: 44px;
@@ -1794,10 +1833,6 @@ html[data-theme="dark"] .button-primary {
 @media (max-width: 480px) {
   .dashboard-content {
     padding: 18px max(12px, env(safe-area-inset-right)) calc(26px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
-  }
-
-  .brand-copy small {
-    display: none;
   }
 
   .kpi-grid {

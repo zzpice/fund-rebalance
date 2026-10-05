@@ -27,6 +27,10 @@ for (const viewport of [
     await page.locator("#cashFlowInput").fill("-10");
 
     if (viewport.width <= 700) {
+      const inputs = await page.locator(".input-grid").boundingBox();
+      const overview = await page.locator(".overview-grid").boundingBox();
+      expect(inputs.y).toBeLessThan(overview.y);
+      await expect(page.locator("#cashFlowInput")).toHaveAttribute("inputmode", "text");
       await expectNoInternalHorizontalScroll(page.locator('[data-view-panel="workspace"] .table-scroll'));
       const inputFontSize = await page.locator("#holding-0").evaluate(element => parseFloat(getComputedStyle(element).fontSize));
       expect(inputFontSize).toBeGreaterThanOrEqual(16);
