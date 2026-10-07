@@ -47,23 +47,25 @@
 git clone https://github.com/zzpice/zp-folio.git
 cd zp-folio
 npm ci
-npx playwright install --with-deps chromium
+npx playwright install --with-deps chromium webkit
 npm test
 npm run dev
 ```
 
-开发地址：`http://127.0.0.1:4173/`。测试覆盖计算规则、浏览器交互，以及根路径和 `/zp-folio/` 下的 PWA 更新与离线使用。
+开发地址：`http://127.0.0.1:4173/`。测试覆盖计算规则、Chromium / WebKit 交互，以及根路径和 `/zp-folio/` 下的 PWA 更新。离线冷重载在 Chromium 中验证；Playwright WebKit 的离线重载存在测试驱动限制，只验证已打开页面的离线计算与失败恢复，Safari 真机需另外复核。
 
-共同视觉变量保存在 `styles/design.css`，各网页项目使用本地副本，不依赖主站在线服务。
+样式集中在 `styles/app.css`，主题由本项目维护。桌面与手机共用一套任务导航；先填写持仓与资金变动，再查看诊断和方案。计算核心与界面保持分离。
 
 资源和 Service Worker 使用相对路径；manifest 的 `id`、`start_url`、`scope` 均为 `./`。
 
-缓存：`zp-folio-v<版本>`，仅清理同前缀的过期版本。主题键：`zp-folio-theme`。
+缓存：`zp-folio-v<版本>`，只缓存声明的完整应用文件，命中后使用同一版本，不在打开期间混入新模块。新版本默认等待旧页面关闭，用户主动刷新时才请求激活；刷新失败保留输入。仅清理本应用的旧版本，主题键仍为 `zp-folio-theme`。
 
-当前版本：**v2.4.0**
+Pages 通过 [.github/workflows/test.yml](.github/workflows/test.yml) 在测试成功后发布文件白名单，包含入口、模块、样式、图标、manifest 与 Service Worker，不发布测试或开发依赖。撤销问题提交并重新运行检查可恢复页面。
+
+当前版本：**v3.0.0**
 
 [MIT License](./LICENSE)。仅供配置计算，不构成投资建议。
 
 ## 项目体系
 
-属于 [ZZP 工具与资源](https://zzp.moe/)。共同的[设计与仓库规范](https://github.com/zzpice/zzp-home/blob/main/docs/design.md)由入口仓库维护；使用步骤、生成产物和验证方式仍以本仓库为准。
+属于 [ZZP 工具与资源](https://zzp.moe/)。使用、验证与维护方式以本仓库为准。

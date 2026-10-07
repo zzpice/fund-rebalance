@@ -1,4 +1,4 @@
-const VERSION = "2.4.0";
+const VERSION = "3.0.0";
 const CACHE_PREFIX = "zp-folio-";
 const CACHE_NAME = `${CACHE_PREFIX}v${VERSION}`;
 const resolve = path => new URL(path, self.location.href).href;
@@ -7,7 +7,6 @@ const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
-  "./styles/design.css",
   "./styles/app.css",
   "./src/app.js",
   "./src/portfolio.js",
@@ -19,68 +18,30 @@ const APP_SHELL = [
   "./icons/apple-touch-icon.png"
 ].map(resolve);
 
+// Install a complete generation, then wait until all older pages close or the user refreshes.
+// Serving HTML and modules from one cache avoids mixing a new page with an old offline module.
 self.addEventListener("install", event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(APP_SHELL))
-      .then(() => self.skipWaiting())
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then(cache =>
+    cache.addAll(APP_SHELL.map(url => new Request(url, {cache: "reload"})))
+  ));
 });
-
 self.addEventListener("activate", event => {
-  event.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(
-        keys
-          .filter(key => (
-            key !== CACHE_NAME
-            && key.startsWith(CACHE_PREFIX)
-          ))
-          .map(key => caches.delete(key))
-      ))
-      .then(() => self.clients.claim())
-  );
+  event.waitUntil(caches.keys().then(keys => Promise.all(
+    keys.filter(key => key !== CACHE_NAME && key.startsWith(CACHE_PREFIX)).map(key => caches.delete(key))
+  )).then(() => self.clients.claim()));
 });
-
 self.addEventListener("message", event => {
   if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
 });
-
 self.addEventListener("fetch", event => {
   const request = event.request;
   if (request.method !== "GET") return;
   const url = new URL(request.url);
-  if (url.origin !== self.location.origin) return;
-
-  if (request.mode === "navigate") {
-    event.respondWith(
-      fetch(request)
-        .then(response => {
-          if (response.ok) {
-            const copy = response.clone();
-            event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.put(INDEX_URL, copy)));
-          }
-          return response;
-        })
-        .catch(async () => {
-          const cache = await caches.open(CACHE_NAME);
-          return await cache.match(request)
-            || await cache.match(INDEX_URL)
-            || await cache.match(resolve("./"));
-        })
-    );
-    return;
-  }
-
-  event.respondWith(
-    fetch(request)
-      .then(async response => {
-        if (response.ok && response.type === "basic") {
-          const cache = await caches.open(CACHE_NAME);
-          await cache.put(request, response.clone());
-        }
-        return response;
-      })
-      .catch(async () => (await caches.open(CACHE_NAME)).match(request))
-  );
+  const index = url.origin === self.location.origin &&
+    [resolve("./"), INDEX_URL].includes(url.origin + url.pathname);
+  if (!index && !APP_SHELL.includes(url.href)) return;
+  event.respondWith(caches.open(CACHE_NAME).then(async cache => {
+    const saved = await cache.match(index ? INDEX_URL : request);
+    return saved || fetch(request);
+  }));
 });

@@ -571,7 +571,7 @@ function toggleTheme() {
 
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
-  $("#themeColor").content = theme === "dark" ? "#151c19" : "#f5f5ef";
+  $("#themeColor").content = theme === "dark" ? "#15191f" : "#f7f8fa";
   $$("[data-theme-toggle]").forEach(button => {
     const dark = theme === "dark";
     button.setAttribute("aria-pressed", String(dark));

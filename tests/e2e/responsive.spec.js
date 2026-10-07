@@ -35,7 +35,7 @@ for (const viewport of [
       const inputFontSize = await page.locator("#holding-0").evaluate(element => parseFloat(getComputedStyle(element).fontSize));
       expect(inputFontSize).toBeGreaterThanOrEqual(16);
       await expect(page.locator(".table-input").first()).toHaveCSS("min-height", "44px");
-      await expect(page.locator(".mobile-bar .icon-button").first()).toHaveCSS("height", "44px");
+      await expect(page.locator(".header-actions .icon-button").first()).toHaveCSS("height", "44px");
       await expect(page.locator("#bulkToggle")).toHaveCSS("white-space", "nowrap");
     }
 
@@ -53,25 +53,23 @@ for (const viewport of [
   });
 }
 
-test("桌面显示固定侧栏，移动端显示顶部任务导航并支持深绿深色主题", async ({ page }) => {
+test("所有尺寸共用任务导航并支持系统深色和显式切换", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "dark" });
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await expect(page.locator("#themeColor")).toHaveAttribute("content", "#151c19");
+  await expect(page.locator("#themeColor")).toHaveAttribute("content", "#15191f");
   await expect(page.locator("[data-theme-toggle]").first()).toHaveAttribute("aria-label", "切换到浅色外观");
-  await expect(page.locator(".side-nav")).toBeVisible();
-  await expect(page.locator(".mobile-bar")).toBeHidden();
+  await expect(page.getByRole("navigation", {name:"任务导航"})).toBeVisible();
 
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect(page.locator(".side-nav")).toBeHidden();
-  await expect(page.locator(".mobile-bar")).toBeVisible();
-  await expect(page.getByRole("navigation", { name: "移动端导航" })).toBeVisible();
+  await expect(page.getByRole("navigation", {name:"任务导航"})).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "任务导航" })).toBeVisible();
 
   const darkBackground = await page.locator("html").evaluate(element => getComputedStyle(element).getPropertyValue("--bg").trim());
-  expect(darkBackground).toBe("#151c19");
+  expect(darkBackground).toBe("#15191f");
 
-  await page.locator(".mobile-bar [data-theme-toggle]").click();
+  await page.locator("[data-theme-toggle]").click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-  await expect(page.locator(".mobile-bar [data-theme-toggle]")).toHaveAttribute("aria-label", "切换到深色外观");
+  await expect(page.locator("[data-theme-toggle]")).toHaveAttribute("aria-label", "切换到深色外观");
 });

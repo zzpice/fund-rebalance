@@ -140,8 +140,11 @@ test("手机端生成失败时能看到错误，资金错误不抹去有效持�
   await expect(page.locator("#statusBanner")).toBeInViewport();
 });
 
-test("复制和手动复制均保留取现后的越界说明", async ({ page, context }) => {
-  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+test("复制和手动复制均保留取现后的越界说明", async ({ page, context, browserName }) => {
+  if (browserName === "chromium") await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  else await page.addInitScript(() => Object.defineProperty(navigator, "clipboard", {
+    configurable:true, value:{writeText:async text => { window.copiedPlan=text; }}
+  }));
   await page.goto("/");
   await fillHoldings(page, ["60", "40", "15", "5"]);
   await page.locator("#cashFlowInput").fill("-8");
@@ -149,7 +152,7 @@ test("复制和手动复制均保留取现后的越界说明", async ({ page, co
   const decision = await page.locator("#decisionText").textContent();
   await page.locator("#copyButton").click();
   await expect(page.locator("#copyButton")).toHaveText("已复制");
-  const copied = await page.evaluate(() => navigator.clipboard.readText());
+  const copied = await page.evaluate(() => window.copiedPlan ?? navigator.clipboard.readText());
   expect(copied).toContain(decision);
   expect(copied).toContain("调整后总额：¥1,120,000");
   expect(copied).toContain("007194 长城短债 A：卖出 ¥50,000");
