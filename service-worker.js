@@ -1,4 +1,4 @@
-const VERSION = "2.3.1";
+const VERSION = "2.4.0";
 const CACHE_PREFIX = "zp-folio-";
 const CACHE_NAME = `${CACHE_PREFIX}v${VERSION}`;
 const resolve = path => new URL(path, self.location.href).href;
@@ -7,6 +7,7 @@ const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
+  "./styles/design.css",
   "./styles/app.css",
   "./src/app.js",
   "./src/portfolio.js",

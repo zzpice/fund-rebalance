@@ -139,7 +139,7 @@ test("主题偏好使用新键并在刷新后保留", async ({ page }) => {
   });
   await page.goto("./");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await expect(page.locator("#themeColor")).toHaveAttribute("content", "#000000");
+  await expect(page.locator("#themeColor")).toHaveAttribute("content", "#151c19");
   await page.locator(".app-bar [data-theme-toggle]").click();
   expect(await page.evaluate(() => localStorage.getItem("zp-folio-theme"))).toBe("light");
   await page.reload();
