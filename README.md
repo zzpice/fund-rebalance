@@ -60,7 +60,7 @@ npm run dev
 
 缓存：`zp-folio-v<版本>`，只缓存声明的完整应用文件，命中后使用同一版本，不在打开期间混入新模块。新版本默认等待旧页面关闭，用户主动刷新时才请求激活；刷新失败保留输入。仅清理本应用的旧版本，主题键仍为 `zp-folio-theme`。
 
-Pages 通过 [.github/workflows/test.yml](.github/workflows/test.yml) 在测试成功后发布文件白名单，包含入口、模块、样式、图标、manifest 与 Service Worker，不发布测试或开发依赖。撤销问题提交并重新运行检查可恢复页面。
+Pages 通过 [.github/workflows/test.yml](.github/workflows/test.yml) 在测试成功后发布文件白名单，包含入口、模块、样式、图标、许可、manifest 与 Service Worker，不发布测试或开发依赖。CI 先组装 `build/pages`，再用 `SITE_ROOT=build/pages npm test` 验证实际发布目录。撤销问题提交并重新运行检查可恢复页面。
 
 当前版本：**v3.0.0**
 

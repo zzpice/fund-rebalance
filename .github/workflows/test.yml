@@ -29,18 +29,17 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium webkit
-      - run: npm test
+      - name: Assemble public site
+        run: |
+          mkdir -p build/pages
+          cp -R index.html manifest.webmanifest service-worker.js styles src icons LICENSE .nojekyll build/pages/
+      - run: SITE_ROOT=build/pages npm test
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report
           path: playwright-report/
           retention-days: 14
-      - name: Assemble public site
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-        run: |
-          mkdir -p build/pages
-          cp -R index.html manifest.webmanifest service-worker.js styles src icons .nojekyll build/pages/
       - uses: actions/upload-pages-artifact@v5
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         with:
