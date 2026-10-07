@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test("PWA 外壳、模块与在线更新可用", async ({ page, request, baseURL }) => {
   const assets = [
+    "./LICENSE",
     "./manifest.webmanifest",
     "./service-worker.js",
     "./styles/app.css",

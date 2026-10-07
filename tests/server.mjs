@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const root = path.resolve(process.env.SITE_ROOT || path.join(path.dirname(fileURLToPath(import.meta.url)), ".."));
 const hostIndex = process.argv.indexOf("--host");
 const portIndex = process.argv.indexOf("--port");
 const basePathIndex = process.argv.indexOf("--base-path");
@@ -35,7 +35,7 @@ createServer(async (req, res) => {
     urlPath = "/" + urlPath.slice(basePath.length);
     if (urlPath.endsWith("/")) urlPath += "index.html";
     const filePath = path.resolve(root, "." + path.normalize(urlPath));
-    if (!filePath.startsWith(root)) {
+    if (!filePath.startsWith(root + path.sep)) {
       res.writeHead(403).end("forbidden");
       return;
     }
