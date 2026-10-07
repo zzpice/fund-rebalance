@@ -1,6 +1,7 @@
-name: v2 Test Suite
+name: Test and deploy
 
 on:
+  workflow_dispatch:
   pull_request:
     branches: [main]
   push:
@@ -12,9 +13,14 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: folio-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   playwright:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -22,7 +28,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps chromium webkit
       - run: npm test
       - uses: actions/upload-artifact@v7
         if: failure()
@@ -30,3 +36,27 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 14
+      - name: Assemble public site
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: |
+          mkdir -p build/pages
+          cp -R index.html manifest.webmanifest service-worker.js styles src icons .nojekyll build/pages/
+      - uses: actions/upload-pages-artifact@v5
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        with:
+          path: build/pages
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: playwright
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy checked site
+        id: deployment
+        uses: actions/deploy-pages@v5

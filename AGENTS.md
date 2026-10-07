@@ -6,4 +6,4 @@
 - 提交前运行 `npm test`，版本相关改动须保持页面、package、manifest、模块与 Service Worker 一致。
 - GitHub Release 标题统一使用英文，格式为 `vX.Y.Z — English Title`；Release Notes 正文可以使用中文。
 - 不增加后端、登录、云同步、行情接口或远程持久化，除非用户明确要求。
-- `styles/design.css` 是 ZZP 公共视觉变量的本地副本，原文件与规范在 `zzp-home`；修改公共变量时同轮同步相关网页，保留项目专用布局、数据与存储边界。
+- 网页外观由本项目独立维护，不复制其他项目的主题文件，也不增加跨仓库配色同步流程。

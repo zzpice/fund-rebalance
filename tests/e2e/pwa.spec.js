@@ -49,14 +49,10 @@ test("PWA 外壳、模块与在线更新可用", async ({ page, request, baseURL
   expect(registration.scriptURL).toBe(new URL("./service-worker.js", appURL).href);
   expect(await page.evaluate(() => caches.keys())).toContain(cacheName);
 
-  await page.evaluate(async cacheName => {
-    const cache = await caches.open(cacheName);
-    const url = new URL("./src/app.js", location.href).href;
-    await cache.put(url, new Response("throw new Error('stale app');", {
-      headers: { "content-type": "application/javascript" }
-    }));
-  }, cacheName);
-
+  // A newer network module must not replace only part of the installed generation.
+  await page.route('**/src/app.js', route => route.fulfill({
+    contentType:'application/javascript', body:"throw new Error('mixed generation');"
+  }));
   await page.reload();
   await expect(page.locator(".holding-input")).toHaveCount(4);
   const cachedApp = await page.evaluate(async cacheName => {
@@ -98,7 +94,7 @@ test("Service Worker 清理过期缓存，保留当前与无关缓存", async ({
   );
 });
 
-test("PWA 离线可计算，更新失败保留方案，联网后可刷新版本", async ({ page, context }) => {
+test("PWA 离线可计算，更新失败保留方案，联网后可刷新版本", async ({ page, context, browserName }) => {
   await page.goto("./");
   await page.evaluate(async () => {
     await navigator.serviceWorker.ready;
@@ -107,9 +103,11 @@ test("PWA 离线可计算，更新失败保留方案，联网后可刷新版本"
     }
   });
   await context.setOffline(true);
-  await page.reload();
+  // Playwright WebKit rejects offline navigation before dispatching to a Service Worker.
+  // Chromium covers offline startup; WebKit still exercises computation and failed refresh offline.
+  if (browserName !== "webkit") await page.reload();
   await expect(page.locator(".holding-input")).toHaveCount(4);
-  await expect(page.locator(".side-nav")).toHaveCSS("position", "fixed");
+  await expect(page.locator(".app-header")).toHaveCSS("position", "sticky");
   for (const [index, value] of ["50", "33.33", "12.5", "4.17"].entries()) {
     await page.locator(`#holding-${index}`).fill(value);
   }
@@ -117,15 +115,15 @@ test("PWA 离线可计算，更新失败保留方案，联网后可刷新版本"
   await expect(page.locator("#decisionTitle")).toHaveText("无需调整");
   await expect(page.locator("#internalTurnover")).toHaveText("¥0");
 
-  await page.locator(".side-nav [data-refresh-version]").click();
+  await page.locator("[data-refresh-version]").click();
   await expect(page.locator("#statusBanner")).toContainText("本次输入与方案已保留");
   await expect(page.locator("#statusBanner")).toBeInViewport();
   await expect(page.locator("#holding-0")).toHaveValue("50");
   await expect(page.locator("#planContent")).toBeVisible();
-  await expect(page.locator(".side-nav [data-refresh-version]")).toBeEnabled();
+  await expect(page.locator("[data-refresh-version]")).toBeEnabled();
 
   await context.setOffline(false);
-  await page.locator(".side-nav [data-refresh-version]").click();
+  await page.locator("[data-refresh-version]").click();
   await expect(page.locator("#holding-0")).toHaveValue("");
   await expect(page.locator(".holding-input")).toHaveCount(4);
 });
@@ -139,8 +137,8 @@ test("主题偏好使用新键并在刷新后保留", async ({ page }) => {
   });
   await page.goto("./");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await expect(page.locator("#themeColor")).toHaveAttribute("content", "#151c19");
-  await page.locator(".app-bar [data-theme-toggle]").click();
+  await expect(page.locator("#themeColor")).toHaveAttribute("content", "#15191f");
+  await page.locator("[data-theme-toggle]").click();
   expect(await page.evaluate(() => localStorage.getItem("zp-folio-theme"))).toBe("light");
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");

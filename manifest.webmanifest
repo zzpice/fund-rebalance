@@ -3,7 +3,7 @@
   "name": "基金再平衡 · ZZP",
   "short_name": "基金再平衡",
   "description": "固定四基金的本地再平衡工具。填写持仓与资金变动，生成调整方案；持仓不上传、不保存。",
-  "version": "2.4.0",
+  "version": "3.0.0",
   "lang": "zh-CN",
   "dir": "ltr",
   "start_url": "./",
@@ -14,8 +14,8 @@
     "minimal-ui"
   ],
   "orientation": "any",
-  "background_color": "#f5f5ef",
-  "theme_color": "#316348",
+  "background_color": "#f7f8fa",
+  "theme_color": "#f7f8fa",
   "categories": [
     "finance",
     "utilities"

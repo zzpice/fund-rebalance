@@ -4,7 +4,7 @@ export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 30000,
   fullyParallel: true,
-  workers: process.env.CI ? 2 : undefined,
+  workers: 2,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI
     ? [["github"], ["list"], ["html", { outputFolder: "playwright-report", open: "never" }]]
@@ -29,6 +29,7 @@ export default defineConfig({
   ],
   projects: [
     { name: "chromium", use: { browserName: "chromium" } },
+    { name: "webkit", use: { browserName: "webkit" } },
     {
       name: "chromium-pages",
       testMatch: "**/pwa.spec.js",
