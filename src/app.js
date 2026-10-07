@@ -30,16 +30,19 @@ bindEvents();
 applyTheme(document.documentElement.dataset.theme);
 updateLiveState();
 registerServiceWorker();
+const wideWorkspace = window.matchMedia("(min-width: 1100px)");
+wideWorkspace.addEventListener("change", syncWorkspaceLayout);
+syncWorkspaceLayout();
 
 function renderFunds() {
   $("#holdingsBody").innerHTML = FUNDS.map((fund, index) => `
-    <tr>
+    <tr style="--fund-color:${FUND_COLORS[index]}">
       <td>
         <a class="fund-name" href="${fund.url}" target="_blank" rel="noopener noreferrer" title="${fund.fullName}">
-          <strong>${fund.name}</strong><span>${fund.code} · ${fund.category}</span>
+          <strong>${fund.name}</strong><span>${fund.code} · ${fund.category}<small class="fund-target">目标 ${formatPercent(fund.targetBps / 10_000)}</small></span>
         </a>
       </td>
-      <td class="numeric mono">${formatPercent(fund.targetBps / 10_000)}</td>
+      <td class="numeric mono target-cell">${formatPercent(fund.targetBps / 10_000)}</td>
       <td class="numeric">
         <label class="sr-only" for="holding-${index}">${fund.name}当前持仓（万）</label>
         <div class="table-input"><input id="holding-${index}" class="holding-input" type="text" inputmode="decimal" enterkeyhint="next" autocomplete="off" placeholder="0.0000" /><span>万</span></div>
@@ -102,6 +105,15 @@ function bindEvents() {
     generatePlan();
   });
 
+  $$("[data-return-edit]").forEach(button => button.addEventListener("click", () => { setView("workspace"); $("#holding-0").focus(); }));
+  $$("[data-flow-mode]").forEach(button => button.addEventListener("click", () => {
+    const input = $("#cashFlowInput");
+    const value = Math.abs(Number(input.value));
+    input.value = button.dataset.flowMode === "none" ? "0" : (button.dataset.flowMode === "withdraw" ? "-" : "+") + String(Number.isFinite(value) ? value : 0);
+    handleInputChange(input);
+    $$("[data-flow-mode]").forEach(item => item.setAttribute("aria-pressed", String(item === button)));
+    input.focus(); input.setSelectionRange(button.dataset.flowMode === "none" ? 0 : 1,input.value.length);
+  }));
   $("#generateButton").addEventListener("click", generatePlan);
   $("#bulkToggle").addEventListener("click", toggleBulkPanel);
   $("#bulkApply").addEventListener("click", applyBulkHoldings);
@@ -125,6 +137,9 @@ function handleInputChange(input) {
   hideBanner();
   invalidatePlan();
   updateLiveState();
+  const value = $("#cashFlowInput").value.trim();
+  const mode = value.startsWith("-") ? "withdraw" : value.startsWith("+") || Number(value) > 0 ? "add" : "none";
+  $$("[data-flow-mode]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.flowMode === mode)));
 }
 
 function toggleBulkPanel() {
@@ -173,12 +188,22 @@ function applyBulkHoldings() {
   $("#cashFlowInput").focus();
 }
 
-function setView(view) {
-  const panel = $(`[data-view-panel="${view}"]`);
-  if (!panel || view === activeView) return;
+function syncWorkspaceLayout() {
+  const isWide = wideWorkspace.matches;
+  document.body.dataset.view = activeView;
+  $$("[data-view-panel]").forEach(panel => {
+    panel.hidden = panel.dataset.viewPanel === "rules" ? activeView !== "rules" : activeView === "rules" || (!isWide && panel.dataset.viewPanel !== activeView);
+  });
+  $("[data-snapshot]").hidden = activeView === "rules" || (!isWide && activeView === "plan");
+  $(".workspace-heading").hidden = activeView === "rules" || (!isWide && activeView === "plan");
+}
 
-  viewScroll[activeView] = window.scrollY;
-  $$("[data-view-panel]").forEach(item => { item.hidden = item !== panel; });
+function setView(view) {
+  if (!VIEW_TITLES[view]) return;
+  const same = view === activeView;
+  if (!same) viewScroll[activeView] = window.scrollY;
+  activeView = view;
+  syncWorkspaceLayout();
   $$("[data-view-nav]").forEach(button => {
     const isActive = button.dataset.viewNav === view;
     button.classList.toggle("is-active", isActive);
@@ -186,8 +211,10 @@ function setView(view) {
     else button.removeAttribute("aria-current");
   });
   $("#appBarTitle").textContent = VIEW_TITLES[view];
-  activeView = view;
-  requestAnimationFrame(() => window.scrollTo(0, viewScroll[view]));
+  requestAnimationFrame(() => {
+    if (!wideWorkspace.matches || view === "rules") window.scrollTo(0, viewScroll[view]);
+    else if (view === "plan") $("#planHeading").scrollIntoView({block:"nearest"});
+  });
 }
 
 function readHoldings() {
@@ -321,8 +348,9 @@ function allocationGradient(weights) {
 }
 
 function generatePlan() {
+  let input;
   try {
-    const input = readForm();
+    input = readForm();
     const plan = createRebalancePlan(input);
     activePlan = plan;
     renderPlan(plan);
@@ -331,6 +359,7 @@ function generatePlan() {
     setView("plan");
     requestAnimationFrame(() => $("#planHeading").focus({ preventScroll: true }));
   } catch (error) {
+    if (!error.field && input && input.holdings.reduce((total,amount) => total + amount,0) + input.flow <= 0) error.field = input.flow < 0 ? "#cashFlowInput" : "#holding-0";
     invalidatePlan();
     showBanner("error", error.message || "无法生成方案，请检查输入。");
     if (error.field) {
@@ -414,9 +443,9 @@ function renderTradeRow(plan, index) {
     <tr data-testid="execution-row" data-tone="${tone}">
       <td><span class="fund-name result-fund"><strong>${fund.name}</strong><span>${fund.code}</span></span></td>
       <td><span class="action-pill ${tone}"><i aria-hidden="true">${trade > 0 ? "↗" : "↘"}</i>${action}</span></td>
-      <td class="numeric mono ${tone}">${formatCurrency(Math.abs(trade))}</td>
-      <td class="numeric mono">${formatCurrency(plan.final[index])}</td>
-      <td class="numeric mono">${formatPercent(plan.weights[index])}</td>
+      <td class="numeric mono trade-amount ${tone}" data-label="执行金额">${formatCurrency(Math.abs(trade))}</td>
+      <td class="numeric mono trade-final" data-label="调整后持仓">${formatCurrency(plan.final[index])}</td>
+      <td class="numeric mono trade-weight" data-label="调整后比例">${formatPercent(plan.weights[index])}</td>
       <td class="reason-cell">${tradeReason(plan, index)}</td>
     </tr>
   `;
@@ -472,6 +501,7 @@ function tradeReason(plan, index) {
 }
 
 function clearInputs() {
+  $$("[data-flow-mode]").forEach(button => button.setAttribute("aria-pressed",String(button.dataset.flowMode === "none")));
   $$(".holding-input").forEach(input => {
     input.value = "";
     input.removeAttribute("aria-invalid");
@@ -483,10 +513,17 @@ function clearInputs() {
   closeBulkPanel({ returnFocus: false });
   $("#bulkHoldingsInput").value = "";
   updateLiveState();
+  $("#planEmptyTitle").textContent = "方案将在这里生成";
+  $("#planEmptyText").textContent = "填写四项持仓与本次资金变动，即可得到逐项执行金额。";
+  $$("[data-flow-mode]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.flowMode === "none")));
   $("#holding-0").focus();
 }
 
 function invalidatePlan() {
+  if (activePlan) {
+    $("#planEmptyTitle").textContent = "输入已修改，重新生成方案";
+    $("#planEmptyText").textContent = "上次方案已失效。确认新的持仓与资金变动后，点击“生成方案”。";
+  }
   activePlan = null;
   $("#planContent").hidden = true;
   $("#planEmpty").hidden = false;

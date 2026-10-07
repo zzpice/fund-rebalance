@@ -2,9 +2,15 @@
 <html lang="zh-CN" data-theme="light">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
     <meta name="theme-color" id="themeColor" content="#f7f8fa" />
-    <meta name="description" content="固定四基金的本地再平衡工具。填写持仓与资金变动，生成调整方案；持仓不上传、不保存。" />
+    <meta
+      name="description"
+      content="固定四基金的本地再平衡工具。填写持仓与资金变动，生成调整方案；持仓不上传、不保存。"
+    />
     <meta name="application-name" content="基金再平衡" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -14,48 +20,100 @@
       (() => {
         let theme;
         // Keep this key in sync with src/app.js.
-        try { theme = localStorage.getItem("zp-folio-theme"); } catch {}
+        try {
+          theme = localStorage.getItem("zp-folio-theme");
+        } catch {}
         if (theme !== "dark" && theme !== "light") {
-          theme = window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          theme = window.matchMedia?.("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
         }
         document.documentElement.dataset.theme = theme;
-        document.getElementById("themeColor").content = theme === "dark" ? "#15191f" : "#f7f8fa";
+        document.getElementById("themeColor").content =
+          theme === "dark" ? "#15191f" : "#f7f8fa";
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
     <link rel="stylesheet" href="./styles/app.css" />
-    <link rel="canonical" href="https://zzpice.github.io/zp-folio/">
-    <meta property="og:type" content="website">
-    <meta property="og:locale" content="zh_CN">
-    <meta property="og:site_name" content="ZZP 工具与资源">
-    <meta property="og:title" content="基金再平衡 · ZZP">
-    <meta property="og:description" content="固定四基金的本地再平衡工具。填写持仓与资金变动，生成调整方案；持仓不上传、不保存。">
-    <meta property="og:url" content="https://zzpice.github.io/zp-folio/">
-    <meta property="og:image" content="https://zzpice.github.io/zp-folio/icons/social-preview.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="基金再平衡 · ZZP">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="基金再平衡 · ZZP">
-    <meta name="twitter:description" content="固定四基金的本地再平衡工具。填写持仓与资金变动，生成调整方案；持仓不上传、不保存。">
-    <meta name="twitter:image" content="https://zzpice.github.io/zp-folio/icons/social-preview.png">
+    <link rel="canonical" href="https://zzpice.github.io/zp-folio/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:site_name" content="ZZP 工具与资源" />
+    <meta property="og:title" content="基金再平衡 · ZZP" />
+    <meta
+      property="og:description"
+      content="固定四基金的本地再平衡工具。填写持仓与资金变动，生成调整方案；持仓不上传、不保存。"
+    />
+    <meta property="og:url" content="https://zzpice.github.io/zp-folio/" />
+    <meta
+      property="og:image"
+      content="https://zzpice.github.io/zp-folio/icons/social-preview.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="基金再平衡 · ZZP" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="基金再平衡 · ZZP" />
+    <meta
+      name="twitter:description"
+      content="固定四基金的本地再平衡工具。填写持仓与资金变动，生成调整方案；持仓不上传、不保存。"
+    />
+    <meta
+      name="twitter:image"
+      content="https://zzpice.github.io/zp-folio/icons/social-preview.png"
+    />
   </head>
   <body>
     <a class="skip-link" href="#main">跳到工作台</a>
     <header class="app-header">
       <div class="header-main">
-        <a class="ecosystem-link" href="https://zzp.moe/" target="_blank" rel="noopener noreferrer" aria-label="ZZP · 所有项目（新标签页）">ZZP / 工具与资源</a>
+        <a
+          class="ecosystem-link"
+          href="https://zzp.moe/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="ZZP · 所有项目（新标签页）"
+          >ZZP / 工具与资源</a
+        >
         <div class="header-actions">
-          <button class="icon-button" type="button" data-refresh-version aria-label="刷新">↻</button>
-          <button class="icon-button" type="button" data-theme-toggle aria-label="切换到深色外观" aria-pressed="false">◐</button>
+          <button
+            class="icon-button"
+            type="button"
+            data-refresh-version
+            aria-label="刷新"
+          >
+            ↻
+          </button>
+          <button
+            class="icon-button"
+            type="button"
+            data-theme-toggle
+            aria-label="切换到深色外观"
+            aria-pressed="false"
+          >
+            ◐
+          </button>
         </div>
       </div>
       <div class="header-navigation">
-        <div class="brand"><img src="./icons/icon.svg" alt="" width="34" height="34"><div><h1>基金再平衡</h1><small>v3.0.0</small></div></div>
+        <div class="brand">
+          <img src="./icons/icon.svg" alt="" width="34" height="34" />
+          <div>
+            <h1>基金再平衡</h1>
+            <small>v3.1.0</small>
+          </div>
+        </div>
         <nav class="workspace-nav" aria-label="任务导航">
-          <button type="button" data-view-nav="workspace" class="is-active" aria-current="page">工作台</button>
+          <button
+            type="button"
+            data-view-nav="workspace"
+            class="is-active"
+            aria-current="page"
+          >
+            工作台
+          </button>
           <button type="button" data-view-nav="plan">执行方案</button>
           <button type="button" data-view-nav="rules">规则</button>
         </nav>
@@ -63,58 +121,202 @@
     </header>
     <main id="main" tabindex="-1" class="dashboard-main">
       <h2 class="sr-only" id="appBarTitle">工作台</h2>
-        <div class="dashboard-content">
-          <div class="status-banner" id="statusBanner" role="status" aria-live="polite" hidden></div>
+      <div class="dashboard-content">
+        <div
+          class="status-banner"
+          id="statusBanner"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></div>
+        <div class="workspace-heading">
+          <div>
+            <p class="eyebrow">四基金 · 固定目标</p>
+            <h2>组合再平衡</h2>
+            <p>确认持仓，计算调整，按清单执行。</p>
+          </div>
+          <span class="local-badge"><i></i>持仓不上传、不保存</span>
+        </div>
+        <section class="kpi-grid snapshot-grid" data-snapshot>
+          <article class="kpi-card">
+            <span class="kpi-label">当前总额</span>
+            <strong class="kpi-value" id="currentTotal">—</strong>
+            <small>4 项持仓</small>
+          </article>
+          <article class="kpi-card">
+            <span class="kpi-label">调整后总额</span>
+            <strong class="kpi-value" id="afterTotal">—</strong>
+            <small id="flowSummary">—</small>
+          </article>
+          <article class="kpi-card">
+            <span class="kpi-label">最大偏离（百分点）</span>
+            <strong class="kpi-value" id="maxDeviation">—</strong>
+            <small id="deviationFund">相对目标</small>
+          </article>
+          <article class="kpi-card is-featured">
+            <span class="kpi-label">当前组合状态</span>
+            <strong class="kpi-value kpi-status" id="portfolioStatus"
+              >等待输入</strong
+            >
+            <small id="statusDetail">填写全部持仓</small>
+          </article>
+        </section>
+        <div class="work-area">
           <section data-view-panel="workspace">
-            <p class="workspace-intro">固定四基金的再平衡工具。填写当前持仓与资金变动，再生成执行方案；持仓不上传、不保存。</p>
-
             <section class="grid-12 input-grid" aria-label="持仓与资金变动">
               <article class="table-card span-8">
                 <header class="card-header">
-                  <div><h2>当前持仓</h2><p>单位：万 · 最多 4 位小数 · 无持仓填 0</p></div>
-                  <button class="button button-secondary button-compact" id="bulkToggle" type="button" aria-expanded="false" aria-controls="bulkPanel">批量输入</button>
+                  <div>
+                    <h2><span class="step-number">1</span> 当前持仓</h2>
+                    <p>单位：万 · 最多 4 位小数 · 无持仓填 0</p>
+                  </div>
+                  <button
+                    class="button button-secondary button-compact"
+                    id="bulkToggle"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="bulkPanel"
+                  >
+                    批量输入
+                  </button>
                 </header>
                 <div class="bulk-panel" id="bulkPanel" hidden>
-                  <label for="bulkHoldingsInput"><span>按顺序输入 4 项</span><small>空格、逗号、/、换行分隔</small></label>
+                  <label for="bulkHoldingsInput"
+                    ><span>按顺序输入 4 项</span
+                    ><small>空格、逗号、/、换行分隔</small></label
+                  >
                   <div class="bulk-controls">
-                    <textarea id="bulkHoldingsInput" rows="2" inputmode="decimal" autocomplete="off" placeholder="60 40 15 5"></textarea>
-                    <button class="button button-primary" id="bulkApply" type="button">应用</button>
-                    <button class="button button-secondary" id="bulkCancel" type="button">取消</button>
+                    <textarea
+                      id="bulkHoldingsInput"
+                      rows="2"
+                      inputmode="decimal"
+                      autocomplete="off"
+                      placeholder="60 40 15 5"
+                    ></textarea>
+                    <button
+                      class="button button-primary"
+                      id="bulkApply"
+                      type="button"
+                    >
+                      应用
+                    </button>
+                    <button
+                      class="button button-secondary"
+                      id="bulkCancel"
+                      type="button"
+                    >
+                      取消
+                    </button>
                   </div>
                 </div>
                 <div class="table-scroll">
                   <table class="holdings-table">
-                    <thead><tr><th>基金</th><th class="numeric">目标</th><th class="numeric">当前持仓（万）</th><th class="numeric">当前比例</th><th>状态</th></tr></thead>
+                    <thead>
+                      <tr>
+                        <th>基金</th>
+                        <th class="numeric target-cell">目标</th>
+                        <th class="numeric">当前持仓（万）</th>
+                        <th class="numeric">当前比例</th>
+                        <th>状态</th>
+                      </tr>
+                    </thead>
                     <tbody id="holdingsBody"></tbody>
                   </table>
                 </div>
               </article>
 
-              <article class="dashboard-card span-4">
+              <article class="dashboard-card span-4 cash-flow-card">
                 <header class="card-header">
-                  <div><h2>资金变动</h2></div>
-                  <button class="button button-secondary" id="clearButton" type="button">清空全部</button>
+                  <div>
+                    <h2><span class="step-number">2</span> 资金变动</h2>
+                  </div>
+                  <button
+                    class="button button-secondary"
+                    id="clearButton"
+                    type="button"
+                  >
+                    清空全部
+                  </button>
                 </header>
+                <div class="flow-modes" role="group" aria-label="资金变动方向">
+                  <button
+                    type="button"
+                    data-flow-mode="none"
+                    aria-pressed="true"
+                  >
+                    不变</button
+                  ><button
+                    type="button"
+                    data-flow-mode="add"
+                    aria-pressed="false"
+                  >
+                    ＋ 新增</button
+                  ><button
+                    type="button"
+                    data-flow-mode="withdraw"
+                    aria-pressed="false"
+                  >
+                    − 取出
+                  </button>
+                </div>
                 <label class="field" for="cashFlowInput">
-                  <span>＋新增 / −取出（万）</span>
-                  <div class="input-shell"><input id="cashFlowInput" type="text" inputmode="text" enterkeyhint="go" autocomplete="off" autocapitalize="off" spellcheck="false" value="0" aria-describedby="cashFlowHelp" /><b>万</b></div>
-                  <small id="cashFlowHelp">+5 新增 · -5 取出 · 无变动填 0</small>
+                  <span>本次变动金额</span>
+                  <div class="input-shell">
+                    <input
+                      id="cashFlowInput"
+                      type="text"
+                      inputmode="text"
+                      enterkeyhint="go"
+                      autocomplete="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                      value="0"
+                      aria-describedby="cashFlowHelp"
+                    /><b>万</b>
+                  </div>
+                  <small id="cashFlowHelp"
+                    >正数新增，负数取出；选择上方方向可切换正负。</small
+                  >
                 </label>
-                <div class="generate-actions"><button class="button button-primary" id="generateButton" type="button">生成方案</button></div>
+                <div class="generate-actions">
+                  <span>金额以「万」输入，结果以「元」执行</span
+                  ><button
+                    class="button button-primary"
+                    id="generateButton"
+                    type="button"
+                  >
+                    生成方案
+                  </button>
+                </div>
               </article>
-
-
             </section>
-            <section class="overview-grid" aria-label="组合概览">
+            <details class="allocation-details">
+              <summary>
+                查看当前与目标配比 <span aria-hidden="true">＋</span>
+              </summary>
               <article class="allocation-card">
                 <header class="allocation-header">
                   <h2>配置</h2>
-                  <div class="ring-key" aria-label="图表图例"><span><i class="is-current"></i>当前</span><span><i class="is-target"></i>目标</span></div>
+                  <div class="ring-key" aria-label="图表图例">
+                    <span><i class="is-current"></i>当前</span
+                    ><span><i class="is-target"></i>目标</span>
+                  </div>
                 </header>
                 <div class="allocation-layout">
-                  <div class="allocation-chart" id="allocationChart" role="img" aria-label="等待输入当前持仓">
-                    <div class="allocation-ring allocation-ring-current" id="currentRing"></div>
-                    <div class="allocation-ring allocation-ring-target" id="targetRing"></div>
+                  <div
+                    class="allocation-chart"
+                    id="allocationChart"
+                    role="img"
+                    aria-label="等待输入当前持仓"
+                  >
+                    <div
+                      class="allocation-ring allocation-ring-current"
+                      id="currentRing"
+                    ></div>
+                    <div
+                      class="allocation-ring allocation-ring-target"
+                      id="targetRing"
+                    ></div>
                     <div class="allocation-center">
                       <span>当前总额</span>
                       <strong id="chartTotal">—</strong>
@@ -124,116 +326,223 @@
                   <div class="allocation-legend" id="allocationLegend"></div>
                 </div>
               </article>
-
-              <section class="kpi-grid">
-                <article class="kpi-card">
-                  <span class="kpi-label">当前总额</span>
-                  <strong class="kpi-value" id="currentTotal">—</strong>
-                  <small>4 项持仓</small>
-                </article>
-                <article class="kpi-card">
-                  <span class="kpi-label">调整后总额</span>
-                  <strong class="kpi-value" id="afterTotal">—</strong>
-                  <small id="flowSummary">—</small>
-                </article>
-                <article class="kpi-card">
-                  <span class="kpi-label">最大偏离（百分点）</span>
-                  <strong class="kpi-value" id="maxDeviation">—</strong>
-                  <small id="deviationFund">相对目标</small>
-                </article>
-                <article class="kpi-card is-featured">
-                  <span class="kpi-label">当前组合状态</span>
-                  <strong class="kpi-value kpi-status" id="portfolioStatus">等待输入</strong>
-                  <small id="statusDetail">填写全部持仓</small>
-                </article>
-              </section>
-            </section>
-
+            </details>
           </section>
 
           <section data-view-panel="plan" aria-labelledby="planHeading" hidden>
             <div class="section-heading">
               <h2 id="planHeading" tabindex="-1">执行方案</h2>
-              <button class="button button-secondary" id="copyButton" type="button" disabled>复制</button>
+              <button
+                class="button button-secondary return-edit"
+                type="button"
+                data-return-edit
+              >
+                返回调整
+              </button>
+              <button
+                class="button button-secondary"
+                id="copyButton"
+                type="button"
+                disabled
+              >
+                复制
+              </button>
             </div>
-            <textarea class="manual-copy" id="manualCopy" aria-label="可手动复制的执行方案" readonly hidden></textarea>
+            <textarea
+              class="manual-copy"
+              id="manualCopy"
+              aria-label="可手动复制的执行方案"
+              readonly
+              hidden
+            ></textarea>
 
             <div class="empty-panel" id="planEmpty">
-              <span class="empty-icon" aria-hidden="true">↗</span>
-              <div><strong>暂无方案</strong><p>在工作台填写持仓与资金变动，然后点击“生成方案”。</p></div>
+              <div class="empty-plan-diagram" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+              <div>
+                <strong id="planEmptyTitle">方案将在这里生成</strong>
+                <p id="planEmptyText">
+                  填写左侧四项持仓与本次资金变动，即可得到逐项执行金额。
+                </p>
+                <ol>
+                  <li><span>1</span>输入当前持仓</li>
+                  <li><span>2</span>确认资金变动</li>
+                  <li><span>3</span>生成并复制执行清单</li>
+                </ol>
+                <button
+                  class="button button-secondary return-edit"
+                  type="button"
+                  data-return-edit
+                >
+                  返回填写持仓
+                </button>
+              </div>
             </div>
 
             <div id="planContent" hidden>
               <article class="decision-card" id="decisionCard">
-                <div><h3 id="decisionTitle">—</h3><p id="decisionText">—</p></div>
+                <div>
+                  <h3 id="decisionTitle">—</h3>
+                  <p id="decisionText">—</p>
+                </div>
                 <span class="decision-badge" id="decisionBadge">—</span>
               </article>
 
               <div class="kpi-grid result-kpis">
-                <article class="kpi-card"><span class="kpi-label">买入</span><strong class="kpi-value positive" id="buyTotal">—</strong></article>
-                <article class="kpi-card"><span class="kpi-label">卖出</span><strong class="kpi-value negative" id="sellTotal">—</strong></article>
-                <article class="kpi-card"><span class="kpi-label">内部转换</span><strong class="kpi-value" id="internalTurnover">—</strong><small>不含资金变动</small></article>
-                <article class="kpi-card"><span class="kpi-label">调整后状态</span><strong class="kpi-value kpi-status" id="finalStatus">—</strong><small id="finalStatusDetail">相对触发区间</small></article>
+                <article class="kpi-card">
+                  <span class="kpi-label">买入</span
+                  ><strong class="kpi-value positive" id="buyTotal">—</strong>
+                </article>
+                <article class="kpi-card">
+                  <span class="kpi-label">卖出</span
+                  ><strong class="kpi-value negative" id="sellTotal">—</strong>
+                </article>
+                <article class="kpi-card">
+                  <span class="kpi-label">内部转换</span
+                  ><strong class="kpi-value" id="internalTurnover">—</strong
+                  ><small>不含资金变动</small>
+                </article>
+                <article class="kpi-card">
+                  <span class="kpi-label">调整后状态</span
+                  ><strong class="kpi-value kpi-status" id="finalStatus"
+                    >—</strong
+                  ><small id="finalStatusDetail">相对触发区间</small>
+                </article>
               </div>
 
               <article class="table-card execution-card">
-                <header class="table-header"><h3>执行清单</h3><span class="pill" id="tradeCount">0 笔</span></header>
-                <div class="no-trades" id="noTrades" hidden><span aria-hidden="true">✓</span><strong>无需交易</strong></div>
+                <header class="table-header">
+                  <h3>执行清单</h3>
+                  <span class="pill" id="tradeCount">0 笔</span>
+                </header>
+                <div class="no-trades" id="noTrades" hidden>
+                  <span aria-hidden="true">✓</span><strong>无需交易</strong>
+                </div>
                 <div class="table-scroll" id="activeTradesTable">
-                  <table><thead><tr><th>基金</th><th>操作</th><th class="numeric">执行金额</th><th class="numeric">调整后持仓</th><th class="numeric">调整后比例</th><th>依据</th></tr></thead><tbody id="executionBody"></tbody></table>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>基金</th>
+                        <th>操作</th>
+                        <th class="numeric">执行金额</th>
+                        <th class="numeric">调整后持仓</th>
+                        <th class="numeric">调整后比例</th>
+                        <th>依据</th>
+                      </tr>
+                    </thead>
+                    <tbody id="executionBody"></tbody>
+                  </table>
                 </div>
                 <details class="unchanged-trades" id="unchangedTrades">
                   <summary id="unchangedSummary">0 项保持</summary>
                   <div class="unchanged-list" id="unchangedList"></div>
                 </details>
-                <p class="risk-note">金额精确到 ¥1，仅供参考；未计入费用及净值变化。</p>
+                <p class="risk-note">
+                  金额精确到 ¥1，仅供参考；未计入费用及净值变化。
+                </p>
               </article>
 
-              <section class="grid-12 result-grid">
-                <article class="dashboard-card span-7">
-                  <header class="card-header"><h3>调整前后</h3></header>
-                  <div class="comparison-list" id="comparisonList"></div>
-                </article>
-                <article class="dashboard-card span-5">
-                  <header class="card-header"><h3>金额核对</h3></header>
-                  <dl class="calculation-list" id="calculationList"></dl>
-                </article>
-              </section>
+              <details class="plan-audit">
+                <summary>
+                  调整前后与金额核对 <span aria-hidden="true">＋</span>
+                </summary>
+                <section class="grid-12 result-grid">
+                  <article class="dashboard-card span-7">
+                    <header class="card-header"><h3>调整前后</h3></header>
+                    <div class="comparison-list" id="comparisonList"></div>
+                  </article>
+                  <article class="dashboard-card span-5">
+                    <header class="card-header"><h3>金额核对</h3></header>
+                    <dl class="calculation-list" id="calculationList"></dl>
+                  </article>
+                </section>
+              </details>
             </div>
           </section>
 
-          <section data-view-panel="rules" aria-labelledby="rulesHeading" hidden>
+          <section
+            data-view-panel="rules"
+            aria-labelledby="rulesHeading"
+            hidden
+          >
             <div class="section-heading"><h2 id="rulesHeading">规则</h2></div>
             <div class="grid-12">
               <article class="dashboard-card span-7">
-                <header class="card-header"><div><h3>触发与回调</h3><p>容差 = min(5 个百分点, 目标 × 25%)；边界不触发，触发后回调至目标 ± 80% × 容差。</p></div></header>
+                <header class="card-header">
+                  <div>
+                    <h3>触发与回调</h3>
+                    <p>
+                      容差 = min(5 个百分点, 目标 ×
+                      25%)；边界不触发，触发后回调至目标 ± 80% × 容差。
+                    </p>
+                  </div>
+                </header>
                 <div class="bands-list" id="bandsList"></div>
               </article>
               <article class="dashboard-card span-5 rule-copy">
                 <header class="card-header"><h3>决策顺序</h3></header>
                 <ol>
-                  <li><span>01</span><div><b>无资金变动</b><p>区间内不动；任一越界 → 全部回调。内部换手最小；解不唯一时，按剩余目标缺口或超额同比例配平。</p></div></li>
-                  <li><span>02</span><div><b>＋新增</b><p>按目标缺口补低配；仍越界 → 内部转换。</p></div></li>
-                  <li><span>03</span><div><b>−取出</b><p>先纠正原有高配；再按 007194 → 270048 取出，剩余由 002065 / 110017 按持仓比例分配。不追加内部转换，允许暂时越界。</p></div></li>
+                  <li>
+                    <span>01</span>
+                    <div>
+                      <b>无资金变动</b>
+                      <p>
+                        区间内不动；任一越界 →
+                        全部回调。内部换手最小；解不唯一时，按剩余目标缺口或超额同比例配平。
+                      </p>
+                    </div>
+                  </li>
+                  <li>
+                    <span>02</span>
+                    <div>
+                      <b>＋新增</b>
+                      <p>按目标缺口补低配；仍越界 → 内部转换。</p>
+                    </div>
+                  </li>
+                  <li>
+                    <span>03</span>
+                    <div>
+                      <b>−取出</b>
+                      <p>
+                        先纠正原有高配；再按 007194 → 270048 取出，剩余由 002065
+                        / 110017 按持仓比例分配。不追加内部转换，允许暂时越界。
+                      </p>
+                    </div>
+                  </li>
                 </ol>
               </article>
               <article class="dashboard-card local-use">
                 <header class="card-header"><h3>本地使用与安装</h3></header>
-                <p>持仓只用于本次计算，不上传、不保存；仅保存外观偏好。刷新或关闭页面后需重新填写。</p>
-                <p>可通过支持安装的浏览器菜单安装此应用；iPhone / iPad 可在 Safari 的分享菜单中选择“添加到主屏幕”。首次在线打开并完成缓存后，可离线使用。</p>
-                <p>“刷新”会检查版本并重新加载页面，清空本次输入；离线时继续使用已缓存版本。</p>
+                <p>
+                  持仓只用于本次计算，不上传、不保存；仅保存外观偏好。刷新或关闭页面后需重新填写。
+                </p>
+                <p>
+                  可通过支持安装的浏览器菜单安装此应用；iPhone / iPad 可在
+                  Safari
+                  的分享菜单中选择“添加到主屏幕”。首次在线打开并完成缓存后，可离线使用。
+                </p>
+                <p>
+                  “刷新”会检查版本并重新加载页面，清空本次输入；离线时继续使用已缓存版本。
+                </p>
               </article>
             </div>
           </section>
-
-          <footer class="footer">
-            <a href="https://zzp.moe/" target="_blank" rel="noopener noreferrer" aria-label="所有项目（新标签页）">所有项目 ↗</a>
-            <div>
-              <div>仅供配置计算，不构成投资建议。</div>
-              <div>© 2026 Zhipeng Zhou</div>
-            </div>
-          </footer>
         </div>
+        <footer class="footer">
+          <a
+            href="https://zzp.moe/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="所有项目（新标签页）"
+            >所有项目 ↗</a
+          >
+          <div>
+            <div>仅供配置计算，不构成投资建议。</div>
+            <div>© 2026 Zhipeng Zhou</div>
+          </div>
+        </footer>
+      </div>
     </main>
     <script type="module" src="./src/app.js"></script>
   </body>
