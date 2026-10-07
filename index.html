@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" id="themeColor" content="#f5f7fb" />
+    <meta name="theme-color" id="themeColor" content="#f5f5ef" />
     <meta name="description" content="固定四基金的本地再平衡工具。填写持仓与资金变动，生成调整方案；持仓不上传、不保存。" />
-    <meta name="application-name" content="zp-folio" />
+    <meta name="application-name" content="基金再平衡" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="zp-folio" />
-    <title>zp-folio</title>
+    <meta name="apple-mobile-web-app-title" content="基金再平衡" />
+    <title>基金再平衡 · ZZP</title>
     <script>
       (() => {
         let theme;
@@ -19,22 +19,40 @@
           theme = window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
         }
         document.documentElement.dataset.theme = theme;
-        document.getElementById("themeColor").content = theme === "dark" ? "#000000" : "#f5f7fb";
+        document.getElementById("themeColor").content = theme === "dark" ? "#151c19" : "#f5f5ef";
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <link rel="stylesheet" href="./styles/design.css" />
     <link rel="stylesheet" href="./styles/app.css" />
+    <link rel="canonical" href="https://zzpice.github.io/zp-folio/">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="zh_CN">
+    <meta property="og:site_name" content="ZZP 工具与资源">
+    <meta property="og:title" content="基金再平衡 · ZZP">
+    <meta property="og:description" content="固定四基金的本地再平衡工具。填写持仓与资金变动，生成调整方案；持仓不上传、不保存。">
+    <meta property="og:url" content="https://zzpice.github.io/zp-folio/">
+    <meta property="og:image" content="https://zzpice.github.io/zp-folio/icons/social-preview.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="基金再平衡 · ZZP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="基金再平衡 · ZZP">
+    <meta name="twitter:description" content="固定四基金的本地再平衡工具。填写持仓与资金变动，生成调整方案；持仓不上传、不保存。">
+    <meta name="twitter:image" content="https://zzpice.github.io/zp-folio/icons/social-preview.png">
   </head>
   <body>
+    <a class="skip-link" href="#main">跳到工作台</a>
     <div class="app-shell">
       <aside class="side-nav" aria-label="主导航">
-        <div class="brand" aria-label="zp-folio">
+        <a class="ecosystem-link" href="https://zzp.moe/" target="_blank" rel="noopener noreferrer" aria-label="ZZP · 所有项目（新标签页）">ZZP / 工具与资源</a>
+        <div class="brand" aria-label="基金再平衡">
           <img class="brand-mark" src="./icons/icon.svg" alt="" width="38" height="38" />
           <span class="brand-copy">
-            <strong>zp-folio</strong>
-            <small>v2.3.1</small>
+            <strong>基金再平衡</strong>
+            <small>v2.4.0</small>
           </span>
         </div>
 
@@ -58,13 +76,14 @@
         </div>
       </aside>
 
-      <main class="dashboard-main">
-        <h1 class="sr-only">zp-folio</h1>
+      <main id="main" tabindex="-1" class="dashboard-main">
+        <h1 class="sr-only">基金再平衡</h1>
         <header class="mobile-bar">
+          <a class="ecosystem-link" href="https://zzp.moe/" target="_blank" rel="noopener noreferrer" aria-label="ZZP · 所有项目（新标签页）">ZZP / 工具与资源</a>
           <div class="mobile-bar-main">
             <div class="brand">
               <img class="brand-mark" src="./icons/icon.svg" alt="" width="38" height="38" />
-              <span class="brand-copy"><strong>zp-folio</strong><small>v2.3.1</small></span>
+              <span class="brand-copy"><strong>基金再平衡</strong><small>v2.4.0</small></span>
             </div>
             <div class="mobile-actions">
               <button class="icon-button" type="button" data-refresh-version aria-label="刷新">↻</button>
