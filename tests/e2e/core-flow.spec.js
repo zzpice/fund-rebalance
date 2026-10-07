@@ -166,3 +166,23 @@ test("复制和手动复制均保留取现后的越界说明", async ({ page, co
   await expect(page.locator("#manualCopy")).toBeVisible();
   await expect(page.locator("#manualCopy")).toHaveValue(copied);
 });
+
+
+test("先选择取出再输入金额，方向、实时总额和旧方案失效保持一致", async ({ page }) => {
+  await page.goto("/");
+  await fillHoldings(page,["50","33.33","12.5","4.17"]);
+  await page.locator('[data-flow-mode="withdraw"]').click();
+  await page.locator('#cashFlowInput').press('5');
+  await expect(page.locator('#cashFlowInput')).toHaveValue('-5');
+  await expect(page.locator('#afterTotal')).toHaveText('95 万');
+  await page.locator('#generateButton').click();
+  await expect(page.locator('#copyButton')).toBeEnabled();
+  await page.locator('[data-flow-mode="add"]').click();
+  await expect(page.locator('#cashFlowInput')).toHaveValue('+5');
+  await expect(page.locator('#afterTotal')).toHaveText('105 万');
+  await expect(page.locator('#copyButton')).toBeDisabled();
+  await expect(page.locator('#planEmptyTitle')).toContainText('输入已修改');
+  await page.locator('#clearButton').click();
+  await expect(page.locator('[data-flow-mode="none"]')).toHaveAttribute('aria-pressed','true');
+  await expect(page.locator('#holding-0')).toHaveValue('');
+});

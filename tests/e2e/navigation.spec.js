@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("任务导航在工作台、方案和规则三个独立视图间切换", async ({ page }) => {
+test("桌面并排编辑与方案，规则独立显示", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("/");
 
@@ -10,13 +10,13 @@ test("任务导航在工作台、方案和规则三个独立视图间切换", as
   const active = page.locator(".workspace-nav button.is-active");
 
   await expect(workspace).toBeVisible();
-  await expect(plan).toBeHidden();
+  await expect(plan).toBeVisible();
   await expect(rules).toBeHidden();
   await expect(page.locator("#appBarTitle")).toHaveText("工作台");
   await expect(active).toHaveAttribute("aria-current", "page");
 
   await page.getByRole("button", { name: "执行方案", exact: true }).click();
-  await expect(workspace).toBeHidden();
+  await expect(workspace).toBeVisible();
   await expect(plan).toBeVisible();
   await expect(rules).toBeHidden();
   await expect(active).toContainText("执行方案");
@@ -24,10 +24,16 @@ test("任务导航在工作台、方案和规则三个独立视图间切换", as
   await expect(page.locator("#appBarTitle")).toHaveText("执行方案");
 
   await page.getByRole("button", { name: "规则", exact: true }).click();
+  await expect(workspace).toBeHidden();
   await expect(plan).toBeHidden();
   await expect(rules).toBeVisible();
   await expect(active).toContainText("规则");
   await expect(page.locator("#appBarTitle")).toHaveText("规则");
+  await page.getByRole("button", { name:"工作台", exact:true }).click();
+  await expect(workspace).toBeVisible();
+  await expect(plan).toBeVisible();
+  const inputBox = await workspace.boundingBox(), planBox = await plan.boundingBox();
+  expect(planBox.x).toBeGreaterThanOrEqual(inputBox.x + inputBox.width);
 });
 
 test("移动端 tab 切换独立视图并恢复各自滚动位置", async ({ page }) => {
