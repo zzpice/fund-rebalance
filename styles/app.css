@@ -1,21 +1,21 @@
 :root {
   color-scheme: light;
-  --bg: #f7f8fa;
+  --bg: #f6f7f8;
   --surface: #fff;
-  --surface-mid: #eff2f5;
-  --text: #202c35;
-  --muted: #687780;
-  --line: #dfe5e9;
-  --accent: #23695b;
-  --accent-soft: #edf5f1;
-  --positive: #23695b;
-  --negative: #ac5147;
-  --warning: #9c711b;
-  --fund-1: #467867;
-  --fund-2: #7898af;
-  --fund-3: #bea269;
-  --fund-4: #a19aac;
-  --shadow: 0 4px 16px #243c4c05;
+  --surface-mid: #edf0f2;
+  --text: #222d35;
+  --muted: #56636c;
+  --line: #dbe0e4;
+  --accent: #126d60;
+  --accent-soft: #eaf4ef;
+  --positive: #1d6b4c;
+  --negative: #b32e40;
+  --warning: #875b09;
+  --fund-1: #258574;
+  --fund-2: #547cb8;
+  --fund-3: #b98328;
+  --fund-4: #8b6bb0;
+  --shadow: 0 1px 2px #182b3810;
   font-family:
     Inter,
     -apple-system,
@@ -24,21 +24,43 @@
     "PingFang SC",
     "Microsoft YaHei",
     sans-serif;
+  --control-line: #7d8992;
+  --accent-solid: #126d60;
+  --accent-hover: #0d5c51;
+  --on-accent: #fff;
+  --buy: #245fb3;
+  --sell: #a34f1c;
+  --disabled-bg: #e9edef;
+  --disabled-text: #7b858d;
+  --focus: #126d60;
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #15191f;
-  --surface: #1c2229;
-  --surface-mid: #252e36;
-  --text: #e4e9ec;
-  --muted: #9aabb5;
-  --line: #333e48;
-  --accent: #8dc4b4;
-  --accent-soft: #263a34;
-  --positive: #8dc4b4;
-  --negative: #e69a8d;
-  --warning: #d3b471;
-  --shadow: none;
+  --bg: #121619;
+  --surface: #1b2024;
+  --surface-mid: #262d32;
+  --text: #eaf0f3;
+  --muted: #a8b2ba;
+  --line: #353f46;
+  --accent: #79d7be;
+  --accent-soft: #223b33;
+  --positive: #7bd8af;
+  --negative: #f49ba9;
+  --warning: #e5bd73;
+  --shadow: 0 1px 3px #0002;
+  --control-line: #74828d;
+  --accent-solid: #267e6d;
+  --accent-hover: #2a8171;
+  --on-accent: #fff;
+  --buy: #94bff4;
+  --sell: #edb184;
+  --fund-1: #50b69f;
+  --fund-2: #80a8dc;
+  --fund-3: #dbb361;
+  --fund-4: #b69bd7;
+  --disabled-bg: #2c3338;
+  --disabled-text: #84919a;
+  --focus: #79d7be;
 }
 * {
   box-sizing: border-box;
@@ -47,7 +69,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-size: 13px;
+  font-size: 0.875rem;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
@@ -67,7 +89,11 @@ button {
 }
 button:disabled {
   cursor: default;
-  opacity: 0.4;
+  opacity: 1;
+  color: var(--disabled-text);
+  background: var(--disabled-bg);
+  border-color: var(--line);
+  box-shadow: none;
 }
 a {
   color: inherit;
@@ -95,7 +121,7 @@ textarea[aria-invalid="true"] {
 }
 input,
 textarea {
-  border: 1px solid var(--line);
+  border: 1px solid var(--control-line);
   background: var(--surface);
   border-radius: 6px;
 }
@@ -112,15 +138,15 @@ p {
   margin: 0;
 }
 h2 {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 650;
 }
 h3 {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 650;
 }
 small {
-  font-size: 12px;
+  font-size: 0.875rem;
   color: var(--muted);
 }
 [hidden] {
@@ -169,7 +195,7 @@ small {
   display: contents;
 }
 .ecosystem-link {
-  font-size: 12px;
+  font-size: 0.875rem;
   color: var(--muted);
   order: 3;
   margin-left: auto;
@@ -185,10 +211,10 @@ small {
   border: 0;
   border-radius: 6px;
   background: transparent;
-  font-size: 22px;
+  font-size: 1.375rem;
   line-height: 1;
 }
-.icon-button:hover {
+.icon-button:hover:not(:disabled) {
   background: var(--surface-mid);
 }
 .header-navigation {
@@ -206,11 +232,11 @@ small {
   height: 30px;
 }
 .brand h1 {
-  font-size: 15px;
+  font-size: 1rem;
   letter-spacing: -0.025em;
 }
 .brand small {
-  font-size: 11px;
+  font-size: 0.75rem;
   line-height: 1;
   display: block;
 }
@@ -226,10 +252,10 @@ small {
   border-bottom: 2px solid transparent;
   padding: 0 16px;
   background: transparent;
-  font-size: 12px;
+  font-size: 0.875rem;
   color: var(--muted);
 }
-.workspace-nav button:hover {
+.workspace-nav button:hover:not(:disabled) {
   color: var(--text);
 }
 .workspace-nav .is-active {
@@ -253,18 +279,18 @@ small {
   margin-bottom: 18px;
 }
 .eyebrow {
-  font-size: 11px;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
   color: var(--muted);
   margin-bottom: 5px;
 }
 .workspace-heading h2 {
-  font-size: 25px;
+  font-size: 1.5625rem;
   letter-spacing: -0.03em;
   line-height: 1.5;
 }
 .workspace-heading p:last-child {
-  font-size: 12px;
+  font-size: 0.875rem;
   color: var(--muted);
   margin-top: 3px;
 }
@@ -273,13 +299,14 @@ small {
   align-items: center;
   gap: 6px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 0.75rem;
 }
 .local-badge i {
   width: 5px;
   height: 5px;
   border-radius: 50%;
   background: var(--accent);
+  display: none;
 }
 .kpi-grid {
   display: grid;
@@ -304,12 +331,12 @@ small {
 .kpi-label {
   display: block;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 0.8125rem;
   margin-bottom: 7px;
 }
 .kpi-value {
   display: block;
-  font-size: 26px;
+  font-size: 1.75rem;
   line-height: 1.25;
   font-weight: 600;
   letter-spacing: -0.035em;
@@ -317,14 +344,14 @@ small {
   overflow-wrap: anywhere;
 }
 .kpi-status {
-  font-size: 19px;
+  font-size: 1.1875rem;
   letter-spacing: -0.02em;
   line-height: 1.7;
 }
 .kpi-card small {
   display: block;
   margin-top: 7px;
-  font-size: 11px;
+  font-size: 0.75rem;
 }
 .work-area {
   display: grid;
@@ -373,7 +400,7 @@ small {
   padding: 14px 20px;
 }
 .card-header p {
-  font-size: 11px;
+  font-size: 0.75rem;
   color: var(--muted);
   margin-top: 4px;
   max-width: 48em;
@@ -384,7 +411,7 @@ small {
   height: 19px;
   width: 19px;
   background: var(--surface-mid);
-  font-size: 11px;
+  font-size: 0.75rem;
   border-radius: 4px;
   color: var(--muted);
   margin-right: 5px;
@@ -399,26 +426,27 @@ small {
   min-height: 34px;
   border-radius: 5px;
   border: 1px solid transparent;
-  font-size: 12px;
+  font-size: 0.875rem;
   font-weight: 550;
   white-space: nowrap;
   transition: background 0.15s;
 }
-.button-primary {
-  background: var(--accent);
-  color: var(--surface);
+.button-primary:not(:disabled) {
+  background: var(--accent-solid);
+  color: var(--on-accent);
 }
-:root[data-theme="dark"] .button-primary {
-  color: #172820;
+:root[data-theme="dark"] .button-primary:not(:disabled) {
+  color: var(--on-accent);
 }
-.button-primary:hover {
-  filter: brightness(1.08);
+.button-primary:hover:not(:disabled) {
+  filter: none;
+  background: var(--accent-hover);
 }
 .button-secondary {
-  border-color: var(--line);
+  border-color: var(--control-line);
   background: var(--surface);
 }
-.button-secondary:hover {
+.button-secondary:hover:not(:disabled) {
   background: var(--surface-mid);
 }
 .table-scroll {
@@ -429,14 +457,14 @@ table {
   width: 100%;
   border-collapse: collapse;
   table-layout: auto;
-  font-size: 12px;
+  font-size: 0.875rem;
 }
 th {
-  font-size: 10px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: var(--muted);
   text-align: left;
-  background: var(--surface-mid);
+  background: var(--surface);
   padding: 9px 12px;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
@@ -464,16 +492,16 @@ tr:last-child td {
   line-height: 1.6;
 }
 .fund-name strong {
-  font-size: 12px;
+  font-size: 0.875rem;
   font-weight: 550;
 }
 .fund-name span {
-  font-size: 10px;
+  font-size: 0.75rem;
   letter-spacing: 0.015em;
   color: var(--muted);
 }
 .fund-target {
-  font-size: 10px;
+  font-size: 0.75rem;
   display: inline-block;
   margin-left: 8px;
 }
@@ -483,25 +511,29 @@ tr:last-child td {
 .holdings-table .target-cell {
   display: none;
 }
+.input-hint {
+  white-space: nowrap;
+}
 .table-input {
   display: flex;
   align-items: center;
   justify-content: end;
   gap: 5px;
-  min-height: 38px;
-  border: 1px solid var(--line);
+  min-height: 40px;
+  border: 1px solid var(--control-line);
   border-radius: 5px;
   padding: 0 9px;
   width: 116px;
-  background: var(--bg);
+  background: var(--surface);
   margin-left: auto;
 }
 .table-input:focus-within {
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 12%, transparent);
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 .table-input input {
-  font-size: 17px;
+  font-size: 1.125rem;
   letter-spacing: -0.02em;
   border: 0;
   background: transparent;
@@ -514,7 +546,7 @@ tr:last-child td {
   min-width: 0;
 }
 .table-input span {
-  font-size: 11px;
+  font-size: 0.75rem;
   color: var(--muted);
 }
 .state-pill {
@@ -522,7 +554,7 @@ tr:last-child td {
   align-items: center;
   border-radius: 3px;
   padding: 2px 5px;
-  font-size: 10px;
+  font-size: 0.75rem;
   white-space: nowrap;
 }
 .is-pending {
@@ -533,11 +565,11 @@ tr:last-child td {
   background: var(--accent-soft);
 }
 .is-breach {
-  color: var(--negative);
-  background: color-mix(in srgb, var(--negative) 8%, transparent);
+  color: var(--warning);
+  background: color-mix(in srgb, var(--warning) 10%, var(--surface));
 }
 .holdings-table [data-weight] {
-  font-size: 12px;
+  font-size: 0.875rem;
 }
 .holdings-table th:first-child,
 .holdings-table td:first-child {
@@ -554,7 +586,7 @@ tr:last-child td {
   margin: 10px 20px 0;
 }
 .field > span {
-  font-size: 11px;
+  font-size: 0.75rem;
   color: var(--muted);
 }
 .input-shell {
@@ -568,7 +600,7 @@ tr:last-child td {
   border: 0;
   background: transparent;
   border-radius: 0;
-  font-size: 27px;
+  font-size: 1.6875rem;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
   flex: 1;
@@ -578,14 +610,15 @@ tr:last-child td {
 }
 .input-shell:focus-within {
   border-bottom-color: var(--accent);
+  box-shadow: 0 2px 0 var(--focus);
 }
 .input-shell b {
-  font-size: 12px;
+  font-size: 0.875rem;
   font-weight: 400;
   color: var(--muted);
 }
 .field small {
-  font-size: 11px;
+  font-size: 0.75rem;
 }
 .flow-modes {
   margin: 0 20px;
@@ -603,12 +636,15 @@ tr:last-child td {
   flex: 1;
   padding: 6px 8px;
   min-height: 30px;
-  font-size: 12px;
+  font-size: 0.875rem;
 }
 .flow-modes button[aria-pressed="true"] {
   background: var(--surface);
-  box-shadow: 0 1px 4px #0001;
+  box-shadow:
+    0 1px 3px #13252b18,
+    0 0 0 1px var(--line);
   color: var(--text);
+  font-weight: 600;
 }
 .generate-actions {
   display: flex;
@@ -618,14 +654,14 @@ tr:last-child td {
   padding: 12px 20px;
 }
 .generate-actions > span {
-  font-size: 10px;
+  font-size: 0.75rem;
   color: var(--muted);
   max-width: 130px;
 }
 .generate-actions .button {
   min-width: 160px;
   min-height: 40px;
-  font-size: 12px;
+  font-size: 0.875rem;
 }
 .bulk-panel {
   padding: 16px 20px;
@@ -636,7 +672,7 @@ tr:last-child td {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  font-size: 12px;
+  font-size: 0.875rem;
   margin-bottom: 10px;
   gap: 12px;
 }
@@ -648,7 +684,7 @@ tr:last-child td {
 .bulk-controls textarea {
   width: 100%;
   padding: 10px;
-  font-size: 16px;
+  font-size: 1rem;
 }
 .allocation-details,
 .plan-audit {
@@ -661,7 +697,7 @@ tr:last-child td {
   display: flex;
   justify-content: space-between;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 0.875rem;
   padding: 8px 0;
   cursor: pointer;
   list-style: none;
@@ -683,12 +719,12 @@ summary::-webkit-details-marker {
   margin-bottom: 18px;
 }
 .allocation-header h2 {
-  font-size: 12px;
+  font-size: 0.875rem;
 }
 .ring-key {
   display: flex;
   gap: 10px;
-  font-size: 10px;
+  font-size: 0.75rem;
   color: var(--muted);
 }
 .ring-key i {
@@ -743,15 +779,15 @@ summary::-webkit-details-marker {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 0.75rem;
   text-align: center;
 }
 .allocation-center strong {
-  font-size: 14px;
+  font-size: 0.875rem;
   letter-spacing: -0.03em;
 }
 .allocation-center small {
-  font-size: 10px;
+  font-size: 0.75rem;
 }
 .allocation-legend {
   min-width: 0;
@@ -780,18 +816,18 @@ summary::-webkit-details-marker {
   min-width: 0;
 }
 .allocation-item strong {
-  font-size: 11px;
+  font-size: 0.75rem;
   font-weight: 500;
 }
 .allocation-item small {
-  font-size: 10px;
+  font-size: 0.75rem;
 }
 .allocation-values {
   margin-left: auto;
   text-align: right;
 }
 .allocation-values b {
-  font-size: 12px;
+  font-size: 0.875rem;
   font-weight: 550;
 }
 .section-heading {
@@ -803,14 +839,14 @@ summary::-webkit-details-marker {
 }
 .section-heading h2 {
   margin-right: auto;
-  font-size: 16px;
+  font-size: 1rem;
 }
 .return-edit {
   display: none;
 }
 .empty-panel {
   min-height: 462px;
-  border: 1px dashed var(--line);
+  border: 1px solid var(--line);
   border-radius: 8px;
   padding: 65px 28px;
   background: color-mix(in srgb, var(--surface) 50%, var(--bg));
@@ -830,7 +866,7 @@ summary::-webkit-details-marker {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 7px;
-  transform: rotate(-4deg);
+  transform: none;
 }
 .empty-plan-diagram span {
   height: 7px;
@@ -846,13 +882,13 @@ summary::-webkit-details-marker {
   opacity: 0.3;
 }
 .empty-panel strong {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 550;
 }
 .empty-panel p {
   max-width: 300px;
   margin: 9px auto 0;
-  font-size: 12px;
+  font-size: 0.875rem;
   color: var(--muted);
   line-height: 1.9;
 }
@@ -862,7 +898,7 @@ summary::-webkit-details-marker {
   margin: 26px auto 0;
   text-align: left;
   width: fit-content;
-  font-size: 12px;
+  font-size: 0.875rem;
   color: var(--muted);
 }
 .empty-panel li {
@@ -878,7 +914,7 @@ summary::-webkit-details-marker {
   height: 20px;
   width: 20px;
   border-radius: 50%;
-  font-size: 10px;
+  font-size: 0.75rem;
 }
 .empty-panel .return-edit {
   margin-top: 20px;
@@ -895,21 +931,21 @@ summary::-webkit-details-marker {
   margin-bottom: 20px;
 }
 .decision-card h3 {
-  font-size: 16px;
+  font-size: 1rem;
   margin-bottom: 5px;
   letter-spacing: -0.02em;
 }
 .decision-card p {
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.9;
+  font-size: 0.875rem;
+  color: var(--text);
+  line-height: 1.75;
 }
 .decision-card[data-state="warning"] {
   border-color: var(--warning);
   background: color-mix(in srgb, var(--warning) 7%, var(--surface));
 }
 .decision-badge {
-  font-size: 10px;
+  font-size: 0.75rem;
   white-space: nowrap;
   color: var(--accent);
   padding-top: 3px;
@@ -925,10 +961,10 @@ summary::-webkit-details-marker {
   padding-left: 0;
 }
 .result-kpis .kpi-value {
-  font-size: 21px;
+  font-size: 1.375rem;
 }
 .result-kpis .kpi-status {
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.9;
 }
 .positive {
@@ -952,7 +988,7 @@ summary::-webkit-details-marker {
 }
 .pill {
   background: var(--surface-mid);
-  font-size: 10px;
+  font-size: 0.75rem;
   padding: 2px 7px;
   border-radius: 4px;
   color: var(--muted);
@@ -988,7 +1024,7 @@ summary::-webkit-details-marker {
 }
 .trade-amount {
   grid-column: 3;
-  font-size: 19px;
+  font-size: 1.375rem;
   font-weight: 600;
   letter-spacing: -0.03em;
   line-height: 1.4;
@@ -996,26 +1032,26 @@ summary::-webkit-details-marker {
 .trade-final {
   grid-column: 1;
   text-align: left;
-  font-size: 11px;
+  font-size: 0.75rem;
   color: var(--muted);
   padding-left: 10px !important;
 }
 .trade-weight {
   grid-column: 2/-1;
-  font-size: 11px;
+  font-size: 0.75rem;
   color: var(--muted);
 }
 .trade-final:before {
   content: attr(data-label) " ";
-  font-size: 10px;
+  font-size: 0.75rem;
 }
 .trade-weight:before {
   content: attr(data-label) " ";
-  font-size: 10px;
+  font-size: 0.75rem;
 }
 .reason-cell {
   grid-column: 1/-1;
-  font-size: 10px;
+  font-size: 0.75rem;
   color: var(--muted);
   padding-left: 10px !important;
   line-height: 1.8;
@@ -1025,13 +1061,13 @@ summary::-webkit-details-marker {
   padding-left: 10px;
 }
 .result-fund strong {
-  font-size: 12px;
+  font-size: 0.875rem;
 }
 .result-fund span {
-  font-size: 10px;
+  font-size: 0.75rem;
 }
 .action-pill {
-  font-size: 11px;
+  font-size: 0.75rem;
   display: flex;
   align-items: center;
   gap: 3px;
@@ -1043,13 +1079,13 @@ summary::-webkit-details-marker {
 .risk-note {
   padding: 11px 18px;
   background: var(--surface-mid);
-  font-size: 10px;
+  font-size: 0.75rem;
   color: var(--muted);
 }
 .unchanged-trades {
   border-top: 1px solid var(--line);
   padding: 12px 18px;
-  font-size: 11px;
+  font-size: 0.75rem;
   color: var(--muted);
 }
 .unchanged-trades summary {
@@ -1063,7 +1099,7 @@ summary::-webkit-details-marker {
   justify-content: space-between;
   gap: 12px;
   padding: 6px 0;
-  font-size: 10px;
+  font-size: 0.75rem;
   flex-wrap: wrap;
 }
 .unchanged-item > span {
@@ -1084,10 +1120,10 @@ summary::-webkit-details-marker {
   gap: 8px;
 }
 .no-trades span {
-  font-size: 24px;
+  font-size: 1.5rem;
 }
 .no-trades strong {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 550;
 }
 .result-grid {
@@ -1108,7 +1144,7 @@ summary::-webkit-details-marker {
 .comparison-head {
   display: flex;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: 0.75rem;
   margin-bottom: 7px;
   gap: 12px;
 }
@@ -1117,14 +1153,14 @@ summary::-webkit-details-marker {
 }
 .comparison-head span {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 0.75rem;
 }
 .compare-line {
   display: grid;
   grid-template-columns: 36px 1fr 54px;
   align-items: center;
   gap: 8px;
-  font-size: 10px;
+  font-size: 0.75rem;
   margin: 5px 0;
   color: var(--muted);
 }
@@ -1157,7 +1193,7 @@ summary::-webkit-details-marker {
 }
 .calculation-list {
   margin: 0;
-  font-size: 11px;
+  font-size: 0.75rem;
 }
 .calculation-list > div {
   display: flex;
@@ -1183,7 +1219,7 @@ summary::-webkit-details-marker {
   padding: 11px 16px;
   background: var(--accent-soft);
   margin-bottom: 18px;
-  font-size: 12px;
+  font-size: 0.875rem;
   color: var(--positive);
 }
 .status-banner.is-error {
@@ -1195,7 +1231,7 @@ summary::-webkit-details-marker {
   min-height: 180px;
   padding: 15px;
   margin-bottom: 20px;
-  font-size: 12px;
+  font-size: 0.875rem;
 }
 .band-row {
   padding: 16px 20px;
@@ -1205,11 +1241,11 @@ summary::-webkit-details-marker {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  font-size: 12px;
+  font-size: 0.875rem;
 }
 .band-name span {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 0.75rem;
 }
 .band-track {
   height: 12px;
@@ -1235,10 +1271,10 @@ summary::-webkit-details-marker {
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 6px;
-  font-size: 11px;
+  font-size: 0.75rem;
 }
 .band-values span {
-  font-size: 10px;
+  font-size: 0.75rem;
   color: var(--muted);
 }
 .rule-copy ol {
@@ -1253,16 +1289,16 @@ summary::-webkit-details-marker {
   border-top: 1px solid var(--line);
 }
 .rule-copy li > span {
-  font-size: 12px;
+  font-size: 0.875rem;
   color: var(--accent);
 }
 .rule-copy b {
-  font-size: 12px;
+  font-size: 0.875rem;
   font-weight: 550;
 }
 .rule-copy p,
 .local-use > p {
-  font-size: 12px;
+  font-size: 0.875rem;
   color: var(--muted);
   line-height: 1.9;
 }
@@ -1281,7 +1317,7 @@ summary::-webkit-details-marker {
   margin-top: 32px;
   padding: 18px 0;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 0.75rem;
   gap: 20px;
 }
 .footer a:hover {
@@ -1296,6 +1332,33 @@ summary::-webkit-details-marker {
 #planHeading:focus {
   outline: none;
 }
+.action-pill.positive,
+.trade-amount.positive,
+#buyTotal {
+  color: var(--buy);
+}
+.action-pill.negative,
+.trade-amount.negative,
+#sellTotal {
+  color: var(--sell);
+}
+.icon-button svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.button-primary:active:not(:disabled) {
+  background: var(--accent-hover);
+  transform: translateY(1px);
+}
+::selection {
+  background: var(--accent-soft);
+}
+
 @media (min-width: 1100px) {
   .workspace-heading {
     margin-bottom: 16px;
@@ -1338,7 +1401,7 @@ summary::-webkit-details-marker {
     display: none;
   }
   .cash-flow-card .input-shell input {
-    font-size: 24px;
+    font-size: 1.5rem;
     padding: 0;
   }
   .cash-flow-card .generate-actions {
@@ -1361,9 +1424,12 @@ summary::-webkit-details-marker {
   }
   .table-input {
     width: 100px;
+    border: 1px solid var(--control-line);
+    background: var(--surface);
+    min-height: 40px;
   }
   .fund-name strong {
-    font-size: 11px;
+    font-size: 0.875rem;
   }
   .work-area {
     gap: 20px;
@@ -1372,13 +1438,13 @@ summary::-webkit-details-marker {
     gap: 7px 10px;
   }
   .trade-amount {
-    font-size: 17px;
+    font-size: 1.375rem;
   }
   .result-kpis .kpi-card {
     padding: 0 10px;
   }
   .result-kpis .kpi-value {
-    font-size: 18px;
+    font-size: 1.375rem;
   }
 }
 @media (max-width: 1099px) {
@@ -1433,7 +1499,7 @@ summary::-webkit-details-marker {
   .holdings-table td:nth-child(4) {
     grid-column: 2;
     grid-row: 2;
-    font-size: 11px;
+    font-size: 0.75rem;
     display: inline;
   }
   .holdings-table td:last-child {
@@ -1441,6 +1507,9 @@ summary::-webkit-details-marker {
   }
   .table-input {
     width: 130px;
+    border: 1px solid var(--control-line);
+    background: var(--surface);
+    min-height: 40px;
   }
   .generate-actions {
     flex-direction: column;
@@ -1459,10 +1528,10 @@ summary::-webkit-details-marker {
     padding: 18px 0;
   }
   .snapshot-grid .kpi-value {
-    font-size: 23px;
+    font-size: 1.4375rem;
   }
   .snapshot-grid .kpi-status {
-    font-size: 17px;
+    font-size: 1.0625rem;
   }
   .execution-card tr {
     grid-template-columns: 1fr auto auto;
@@ -1478,12 +1547,13 @@ summary::-webkit-details-marker {
   }
   .empty-panel {
     min-height: 420px;
+    border: 1px solid var(--line);
   }
   .result-kpis .kpi-value {
-    font-size: 25px;
+    font-size: 1.375rem;
   }
   .result-kpis .kpi-status {
-    font-size: 17px;
+    font-size: 1.0625rem;
   }
   .empty-panel p {
     max-width: 340px;
@@ -1539,7 +1609,7 @@ summary::-webkit-details-marker {
   .workspace-nav button {
     padding: 0 8px;
     min-height: 44px;
-    font-size: 12px;
+    font-size: 0.875rem;
   }
   .dashboard-main {
     padding: 22px 16px 0;
@@ -1549,10 +1619,10 @@ summary::-webkit-details-marker {
     margin-bottom: 18px;
   }
   .workspace-heading h2 {
-    font-size: 23px;
+    font-size: 1.4375rem;
   }
   .workspace-heading p:last-child {
-    font-size: 12px;
+    font-size: 0.875rem;
   }
   .local-badge {
     display: none;
@@ -1571,13 +1641,13 @@ summary::-webkit-details-marker {
     padding-left: 0;
   }
   .snapshot-grid .kpi-value {
-    font-size: 25px;
+    font-size: 1.5625rem;
   }
   .snapshot-grid .kpi-status {
-    font-size: 17px;
+    font-size: 1.0625rem;
   }
   .snapshot-grid .kpi-card small {
-    font-size: 10px;
+    font-size: 0.75rem;
   }
   .input-grid {
     display: block;
@@ -1589,11 +1659,11 @@ summary::-webkit-details-marker {
     padding: 16px;
   }
   .card-header p {
-    font-size: 10px;
+    font-size: 0.75rem;
     max-width: 200px;
   }
   .card-header .button {
-    font-size: 11px;
+    font-size: 0.75rem;
     min-height: 34px;
   }
   .holdings-table tr {
@@ -1601,30 +1671,32 @@ summary::-webkit-details-marker {
     gap: 5px 12px;
   }
   .fund-name strong {
-    font-size: 12px;
+    font-size: 0.875rem;
   }
   .fund-name span {
-    font-size: 10px;
+    font-size: 0.75rem;
   }
   .fund-target {
     display: block;
     margin-left: 0;
-    font-size: 10px;
+    font-size: 0.75rem;
     line-height: 1.5;
   }
   .table-input {
     width: 126px;
     min-height: 44px;
+    border: 1px solid var(--control-line);
+    background: var(--surface);
   }
   .table-input input {
     height: 42px;
-    font-size: 18px;
+    font-size: 1.125rem;
   }
   .table-input span {
-    font-size: 11px;
+    font-size: 0.75rem;
   }
   .holdings-table td:nth-child(4) {
-    font-size: 11px;
+    font-size: 0.75rem;
   }
   .flow-modes {
     margin: 0 16px;
@@ -1636,11 +1708,11 @@ summary::-webkit-details-marker {
     margin: 12px 16px 18px;
   }
   .input-shell input {
-    font-size: 28px;
+    font-size: 1.75rem;
     min-height: 44px;
   }
   .field small {
-    font-size: 11px;
+    font-size: 0.75rem;
   }
   .generate-actions {
     position: fixed;
@@ -1656,7 +1728,7 @@ summary::-webkit-details-marker {
     gap: 16px;
   }
   .generate-actions > span {
-    font-size: 11px;
+    font-size: 0.75rem;
     max-width: 120px;
     flex: 1;
   }
@@ -1664,7 +1736,7 @@ summary::-webkit-details-marker {
     min-height: 44px;
     flex: 1;
     width: auto;
-    font-size: 13px;
+    font-size: 0.8125rem;
   }
   .dashboard-content:has([data-view-panel="workspace"]:not([hidden])) {
     padding-bottom: 85px;
@@ -1684,16 +1756,16 @@ summary::-webkit-details-marker {
     inset: 36px 14px;
   }
   .allocation-center strong {
-    font-size: 12px;
+    font-size: 0.875rem;
   }
   .allocation-item small {
-    font-size: 10px;
+    font-size: 0.75rem;
   }
   .allocation-item strong {
-    font-size: 10px;
+    font-size: 0.75rem;
   }
   .allocation-values b {
-    font-size: 11px;
+    font-size: 0.75rem;
   }
   .allocation-header {
     margin-bottom: 10px;
@@ -1702,30 +1774,31 @@ summary::-webkit-details-marker {
     padding: 14px 16px;
   }
   .bulk-panel label {
-    font-size: 11px;
+    font-size: 0.75rem;
     flex-wrap: wrap;
     gap: 4px;
   }
   .bulk-panel small {
-    font-size: 10px;
+    font-size: 0.75rem;
   }
   .section-heading {
     margin-bottom: 18px;
   }
   .section-heading h2 {
-    font-size: 18px;
+    font-size: 1.125rem;
   }
   .section-heading .button {
     min-height: 36px;
-    font-size: 11px;
+    font-size: 0.75rem;
     padding-inline: 10px;
   }
   .empty-panel {
     min-height: 390px;
     padding: 35px 20px;
+    border: 1px solid var(--line);
   }
   .empty-panel p {
-    font-size: 12px;
+    font-size: 0.875rem;
   }
   .result-kpis {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1740,10 +1813,10 @@ summary::-webkit-details-marker {
     padding-left: 0;
   }
   .result-kpis .kpi-value {
-    font-size: 24px;
+    font-size: 1.375rem;
   }
   .result-kpis .kpi-status {
-    font-size: 18px;
+    font-size: 1.125rem;
     line-height: 1.5;
   }
   .decision-card {
@@ -1752,13 +1825,15 @@ summary::-webkit-details-marker {
     margin-bottom: 22px;
   }
   .decision-card h3 {
-    font-size: 16px;
+    font-size: 1rem;
   }
   .decision-card p {
-    font-size: 12px;
+    font-size: 0.875rem;
+    color: var(--text);
+    line-height: 1.75;
   }
   .decision-badge {
-    font-size: 10px;
+    font-size: 0.75rem;
   }
   .execution-card tr {
     grid-template-columns: 1fr auto;
@@ -1777,7 +1852,7 @@ summary::-webkit-details-marker {
   .trade-amount {
     grid-column: 2;
     grid-row: 1/3;
-    font-size: 22px;
+    font-size: 1.375rem;
   }
   .trade-final {
     grid-column: 1;
@@ -1789,16 +1864,16 @@ summary::-webkit-details-marker {
     grid-row: 3;
   }
   .reason-cell {
-    font-size: 10px;
+    font-size: 0.75rem;
   }
   .result-fund strong {
-    font-size: 12px;
+    font-size: 0.875rem;
   }
   .result-fund span {
-    font-size: 10px;
+    font-size: 0.75rem;
   }
   .risk-note {
-    font-size: 10px;
+    font-size: 0.75rem;
     padding: 11px 14px;
   }
   .plan-audit {
@@ -1808,7 +1883,7 @@ summary::-webkit-details-marker {
     padding: 12px 14px;
   }
   .unchanged-item {
-    font-size: 10px;
+    font-size: 0.75rem;
   }
   .grid-12 {
     display: block;
@@ -1820,33 +1895,34 @@ summary::-webkit-details-marker {
     padding: 14px 16px;
   }
   .band-values span {
-    font-size: 10px;
+    font-size: 0.75rem;
   }
   .rule-copy ol {
     padding: 0 16px;
   }
   .rule-copy p {
-    font-size: 12px;
+    font-size: 0.875rem;
   }
   .local-use > p {
     padding-inline: 16px;
   }
   .footer {
     margin-top: 24px;
-    font-size: 10px;
+    font-size: 0.75rem;
     padding-block: 16px;
   }
   .status-banner {
     position: sticky;
     top: 120px;
     z-index: 12;
-    font-size: 12px;
+    font-size: 0.875rem;
     box-shadow: var(--shadow);
   }
   input,
   textarea {
     scroll-margin-top: 140px;
     scroll-margin-bottom: 130px;
+    border: 1px solid var(--control-line);
   }
   #planHeading {
     scroll-margin-top: 130px;
@@ -1870,14 +1946,17 @@ summary::-webkit-details-marker {
     padding-left: 7px;
   }
   .fund-name strong {
-    font-size: 11px;
+    font-size: 0.875rem;
   }
   .table-input {
     width: 112px;
+    border: 1px solid var(--control-line);
+    background: var(--surface);
+    min-height: 44px;
   }
   .card-header p {
     max-width: 170px;
-    font-size: 10px;
+    font-size: 0.75rem;
   }
   .card-header .button {
     padding: 7px 9px;
@@ -1891,33 +1970,33 @@ summary::-webkit-details-marker {
     width: 115px;
   }
   .allocation-center strong {
-    font-size: 11px;
+    font-size: 0.75rem;
   }
   .allocation-item small {
-    font-size: 7px;
+    font-size: 0.75rem;
   }
   .trade-amount {
-    font-size: 20px;
+    font-size: 1.375rem;
   }
   .result-fund strong {
-    font-size: 11px;
+    font-size: 0.875rem;
   }
   .trade-weight,
   .trade-final {
-    font-size: 10px;
+    font-size: 0.75rem;
   }
   .trade-weight:before,
   .trade-final:before {
-    font-size: 10px;
+    font-size: 0.75rem;
   }
   .generate-actions {
     padding-inline: 12px;
   }
   .snapshot-grid .kpi-value {
-    font-size: 23px;
+    font-size: 1.4375rem;
   }
   .snapshot-grid .kpi-status {
-    font-size: 16px;
+    font-size: 1rem;
   }
 }
 @media (prefers-reduced-motion: reduce) {
