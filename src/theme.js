@@ -1,6 +1,6 @@
 // Independent of the calculator: initialize synchronously before CSS or modules.
 (() => {
-  const key = 'zp-folio-theme';
+  const key = 'fund-rebalance-theme';
   const root = document.documentElement;
   const system = matchMedia('(prefers-color-scheme: dark)');
   const preference = value => value === 'light' || value === 'dark' ? value : 'system';

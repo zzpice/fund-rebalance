@@ -2,9 +2,9 @@
 
 固定四基金、固定目标比例的本地再平衡工具。输入持仓与资金变动，生成调整方案与执行清单。
 
-[在线使用](https://zzpice.github.io/zp-folio/) · [使用方法](#使用) · [开发与验证](#开发) · [ZZP · 所有项目](https://zzp.moe/)
+[在线使用](https://zzpice.github.io/fund-rebalance/) · [使用方法](#使用) · [开发与验证](#开发) · [ZZP · 所有项目](https://zzp.moe/)
 
-[![检查](https://github.com/zzpice/zp-folio/actions/workflows/test.yml/badge.svg)](https://github.com/zzpice/zp-folio/actions/workflows/test.yml)
+[![检查](https://github.com/zzpice/fund-rebalance/actions/workflows/test.yml/badge.svg)](https://github.com/zzpice/fund-rebalance/actions/workflows/test.yml)
 
 无需登录、无需后端，持仓数据只在浏览器本地参与计算。支持批量输入、配置图、方案复制、PWA 安装与离线使用。
 
@@ -44,28 +44,24 @@
 静态页面，无需构建。支持 GitHub Pages 与 PWA。
 
 ```bash
-git clone https://github.com/zzpice/zp-folio.git
-cd zp-folio
+git clone https://github.com/zzpice/fund-rebalance.git
+cd fund-rebalance
 npm ci
 npx playwright install --with-deps chromium webkit
 npm test
 npm run dev
 ```
 
-开发地址：`http://127.0.0.1:4173/`。测试覆盖计算规则、Chromium / WebKit 交互，以及根路径和 `/zp-folio/` 下的 PWA 更新。离线冷重载在 Chromium 中验证；Playwright WebKit 的离线重载存在测试驱动限制，只验证已打开页面的离线计算与失败恢复，Safari 真机需另外复核。
+开发地址：`http://127.0.0.1:4173/`。测试覆盖计算规则、Chromium / WebKit 交互，以及根路径和 `/fund-rebalance/` 下的 PWA 更新。离线冷重载在 Chromium 中验证；Playwright WebKit 的离线重载存在测试驱动限制，只验证已打开页面的离线计算与失败恢复，Safari 真机需另外复核。
 
-样式集中在 `styles/app.css`，主题由本项目维护。`src/theme.js` 管理三种模式：手动浅深色沿用 `zp-folio-theme`，恢复系统时移除此键；系统变化与同站其他标签页会实时同步。内联初始化在外部脚本 / 样式下载前设置背景和 `color-scheme`，存储不可用时仍支持当前页面切换。计算与持仓不受主题切换影响。宽屏将持仓、资金调整与执行方案并排显示；配比图和金额核对按需展开。手机采用填写、执行方案和规则三个任务视图，底部固定生成操作，生成后可返回调整。修改输入会立即使旧方案失效。计算核心与界面保持分离。
+样式集中在 `styles/app.css`，主题由本项目维护。`src/theme.js` 管理三种模式：手动浅深色使用 `fund-rebalance-theme`，恢复系统时移除此键；系统变化与同站其他标签页会实时同步。内联初始化在外部脚本 / 样式下载前设置背景和 `color-scheme`，存储不可用时仍支持当前页面切换。计算与持仓不受主题切换影响。宽屏将持仓、资金调整与执行方案并排显示；配比图和金额核对按需展开。手机采用填写、执行方案和规则三个任务视图，底部固定生成操作，生成后可返回调整。修改输入会立即使旧方案失效。计算核心与界面保持分离。
 
-资源和 Service Worker 使用相对路径；浅深两份 manifest 的安装 ID 固定为 `/zp-folio/`，`start_url`、`scope` 为 `./`，身份与图标相同；按当前外观选择安装背景色，页面的 `theme-color` 实时更新。操作系统启动画面可能沿用安装时缓存，已安装应用的启动画面更新由浏览器管理。版本升级时一起更新两份 manifest。旧版本的相对 ID 实际指向同域根路径，会与其他 Pages 应用冲突；已安装旧版者可移除旧图标后重新安装，网址与本地主题键保持不变。
+资源和 Service Worker 使用相对路径；浅深两份 manifest 的安装 ID 固定为 `/fund-rebalance/`，`start_url`、`scope` 为 `./`，身份与图标相同；按当前外观选择安装背景色，页面的 `theme-color` 实时更新。操作系统启动画面可能沿用安装时缓存，已安装应用的启动画面更新由浏览器管理。版本升级时一起更新两份 manifest。更换安装地址后，请从本页的当前链接重新添加到主屏幕，并重新选择主题。持仓不保存，无持仓数据需要迁移。
 
-缓存：`zp-folio-v<版本>`，只缓存声明的完整应用文件，命中后使用同一版本，不在打开期间混入新模块。新版本默认等待旧页面关闭，用户主动刷新时才请求激活；刷新失败保留输入。仅清理本应用的旧版本，主题键仍为 `zp-folio-theme`。
+缓存：`fund-rebalance-v<版本>`，只缓存声明的完整应用文件，命中后使用同一版本，不在打开期间混入新模块。新版本默认等待旧页面关闭，用户主动刷新时才请求激活；刷新失败保留输入。仅清理本应用的旧版本。
 
 Pages 通过 [.github/workflows/test.yml](.github/workflows/test.yml) 在测试成功后发布文件白名单，包含入口、模块、样式、图标、许可、manifest 与 Service Worker，不发布测试或开发依赖。CI 先组装 `build/pages`，再用 `SITE_ROOT=build/pages npm test` 验证实际发布目录。撤销问题提交并重新运行检查可恢复页面。
 
-当前版本：**v3.1.3**
+当前版本：**v3.1.4**
 
 [MIT License](./LICENSE)。仅供配置计算，不构成投资建议。
-
-## 项目体系
-
-属于 [ZZP 工具与资源](https://zzp.moe/)。使用、验证与维护方式以本仓库为准。

@@ -29,7 +29,7 @@ test('三种外观响应系统、保存覆盖、跨标签页同步并恢复系�
   await choose(tab, 'system');
   await expect(tab.locator('html')).toHaveAttribute('data-theme', 'dark');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  expect(await page.evaluate(() => localStorage.getItem('zp-folio-theme'))).toBeNull();
+  expect(await page.evaluate(() => localStorage.getItem('fund-rebalance-theme'))).toBeNull();
   await tab.close();
   await choose(page, 'dark');
   const dark = await page.evaluate(async () => await (await fetch(document.querySelector('link[rel="manifest"]').href)).json());
@@ -58,7 +58,7 @@ test('存储不可用仍可切换并恢复系统', async ({page}) => {
 
 test('非法旧主题值回退到系统', async ({page}) => {
   await page.emulateMedia({colorScheme:'dark'});
-  await page.addInitScript(() => localStorage.setItem('zp-folio-theme','invalid'));
+  await page.addInitScript(() => localStorage.setItem('fund-rebalance-theme','invalid'));
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('data-theme-mode','system');
   await expect(page.locator('html')).toHaveAttribute('data-theme','dark');

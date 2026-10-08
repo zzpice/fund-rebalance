@@ -1,5 +1,5 @@
-const VERSION = "3.1.3";
-const CACHE_PREFIX = "zp-folio-";
+const VERSION = "3.1.4";
+const CACHE_PREFIX = "fund-rebalance-";
 const CACHE_NAME = `${CACHE_PREFIX}v${VERSION}`;
 const resolve = path => new URL(path, self.location.href).href;
 const INDEX_URL = resolve("./index.html");

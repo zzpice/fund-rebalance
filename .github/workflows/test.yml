@@ -1,4 +1,4 @@
-name: Test and deploy
+name: Check and deploy fund rebalancer
 
 on:
   workflow_dispatch:
@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: folio-${{ github.ref }}
+  group: fund-rebalance-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -37,7 +37,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: playwright-report
+          name: fund-rebalance-playwright-report
           path: playwright-report/
           retention-days: 14
       - uses: actions/upload-pages-artifact@v5
