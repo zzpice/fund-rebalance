@@ -272,7 +272,7 @@ function updateLiveState() {
   $("#maxDeviation").textContent = formatSignedPoints(largest.deviation);
   $("#deviationFund").textContent = `${FUNDS[largest.index].code} 相对目标`;
   $("#portfolioStatus").textContent = current.breached ? "越界" : "区间内";
-  $("#portfolioStatus").className = `kpi-value kpi-status ${current.breached ? "negative" : "positive"}`;
+  $("#portfolioStatus").className = `kpi-value kpi-status ${current.breached ? "warning" : "positive"}`;
   $("#statusDetail").textContent = current.breached ? "生成方案查看调整" : "当前持仓在区间内";
 
   updateAllocation(current);
@@ -309,7 +309,7 @@ function updateAllocation(current) {
   $("#currentRing").classList.add("is-ready");
   $("#chartTotal").textContent = formatWan(current.total);
   $("#chartState").textContent = current.breached ? "越界" : "区间内";
-  $("#chartState").className = current.breached ? "negative" : "positive";
+  $("#chartState").className = current.breached ? "warning" : "positive";
   $("#allocationChart").setAttribute(
     "aria-label",
     `当前总额${formatWan(current.total)}，${current.breached ? "存在越界" : "全部在区间内"}。${FUNDS.map((fund, index) => `${fund.code} ${formatPercent(weights[index])}`).join("，")}`
@@ -608,7 +608,7 @@ function toggleTheme() {
 
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
-  $("#themeColor").content = theme === "dark" ? "#15191f" : "#f7f8fa";
+  $("#themeColor").content = theme === "dark" ? "#121619" : "#f6f7f8";
   $$("[data-theme-toggle]").forEach(button => {
     const dark = theme === "dark";
     button.setAttribute("aria-pressed", String(dark));

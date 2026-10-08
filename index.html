@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
-    <meta name="theme-color" id="themeColor" content="#f7f8fa" />
+    <meta name="theme-color" id="themeColor" content="#f6f7f8" />
     <meta
       name="description"
       content="固定四基金的本地再平衡工具。填写持仓与资金变动，生成调整方案；持仓不上传、不保存。"
@@ -30,7 +30,7 @@
         }
         document.documentElement.dataset.theme = theme;
         document.getElementById("themeColor").content =
-          theme === "dark" ? "#15191f" : "#f7f8fa";
+          theme === "dark" ? "#121619" : "#f6f7f8";
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
@@ -49,7 +49,7 @@
     <meta property="og:url" content="https://zzpice.github.io/zp-folio/" />
     <meta
       property="og:image"
-      content="https://zzpice.github.io/zp-folio/icons/social-preview.png"
+      content="https://zzpice.github.io/zp-folio/icons/social-preview.png?v=20261008visual"
     />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -62,7 +62,7 @@
     />
     <meta
       name="twitter:image"
-      content="https://zzpice.github.io/zp-folio/icons/social-preview.png"
+      content="https://zzpice.github.io/zp-folio/icons/social-preview.png?v=20261008visual"
     />
   </head>
   <body>
@@ -84,7 +84,9 @@
             data-refresh-version
             aria-label="刷新"
           >
-            ↻
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 11a8 8 0 1 0-2.3 6.7M20 5v6h-6" />
+            </svg>
           </button>
           <button
             class="icon-button"
@@ -93,7 +95,14 @@
             aria-label="切换到深色外观"
             aria-pressed="false"
           >
-            ◐
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="8" />
+              <path
+                d="M12 4v16M12 4a8 8 0 0 0 0 16Z"
+                fill="currentColor"
+                stroke="none"
+              />
+            </svg>
           </button>
         </div>
       </div>
@@ -102,7 +111,7 @@
           <img src="./icons/icon.svg" alt="" width="34" height="34" />
           <div>
             <h1>基金再平衡</h1>
-            <small>v3.1.0</small>
+            <small>v3.1.1</small>
           </div>
         </div>
         <nav class="workspace-nav" aria-label="任务导航">
@@ -168,7 +177,10 @@
                 <header class="card-header">
                   <div>
                     <h2><span class="step-number">1</span> 当前持仓</h2>
-                    <p>单位：万 · 最多 4 位小数 · 无持仓填 0</p>
+                    <p>
+                      单位：万 · 最多 4 位小数 ·
+                      <span class="input-hint">无持仓填 0</span>
+                    </p>
                   </div>
                   <button
                     class="button button-secondary button-compact"
