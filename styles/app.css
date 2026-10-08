@@ -17,6 +17,8 @@
   --fund-3: #b98328;
   --fund-4: #8b6bb0;
   --shadow: 0 1px 2px #182b3810;
+  --radius-control: 6px;
+  --radius-panel: 8px;
   font-family:
     Inter,
     -apple-system,
@@ -154,7 +156,7 @@ input,
 textarea {
   border: 1px solid var(--control-line);
   background: var(--surface);
-  border-radius: 6px;
+  border-radius: var(--radius-control);
 }
 input::placeholder,
 textarea::placeholder {
@@ -245,7 +247,7 @@ small {
   height: 36px;
   width: 36px;
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--radius-control);
   background: transparent;
   font-size: 1.375rem;
   line-height: 1;
@@ -325,24 +327,9 @@ small {
   letter-spacing: -0.03em;
   line-height: 1.5;
 }
-.workspace-heading p:last-child {
-  font-size: 0.875rem;
-  color: var(--muted);
-  margin-top: 3px;
-}
 .local-badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
   color: var(--muted);
   font-size: 0.75rem;
-}
-.local-badge i {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--accent);
-  display: none;
 }
 .kpi-grid {
   display: grid;
@@ -384,6 +371,12 @@ small {
   letter-spacing: -0.02em;
   line-height: 1.7;
 }
+.amount-unit {
+  font-size: max(0.55em, 0.75rem);
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--muted);
+}
 .kpi-card small {
   display: block;
   margin-top: 7px;
@@ -424,7 +417,7 @@ small {
 .dashboard-card {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: var(--radius-panel);
   min-width: 0;
   box-shadow: var(--shadow);
 }
@@ -468,7 +461,7 @@ small {
   background: var(--surface);
   color: var(--text);
   border: 1px solid var(--control-line);
-  border-radius: 8px;
+  border-radius: var(--radius-panel);
   box-shadow: 0 8px 24px #0003;
 }
 .theme-menu label {
@@ -494,7 +487,7 @@ small {
   gap: 6px;
   padding: 8px 13px;
   min-height: 34px;
-  border-radius: 5px;
+  border-radius: var(--radius-control);
   border: 1px solid transparent;
   font-size: 0.875rem;
   font-weight: 550;
@@ -505,11 +498,7 @@ small {
   background: var(--accent-solid);
   color: var(--on-accent);
 }
-:root[data-theme="dark"] .button-primary:not(:disabled) {
-  color: var(--on-accent);
-}
 .button-primary:hover:not(:disabled) {
-  filter: none;
   background: var(--accent-hover);
 }
 .button-secondary {
@@ -591,7 +580,7 @@ tr:last-child td {
   gap: 5px;
   min-height: 40px;
   border: 1px solid var(--control-line);
-  border-radius: 5px;
+  border-radius: var(--radius-control);
   padding: 0 9px;
   width: 116px;
   background: var(--surface);
@@ -696,7 +685,7 @@ tr:last-child td {
   gap: 3px;
   padding: 3px;
   background: var(--surface-mid);
-  border-radius: 5px;
+  border-radius: var(--radius-control);
 }
 .flow-modes button {
   border: 0;
@@ -916,8 +905,7 @@ summary::-webkit-details-marker {
 }
 .empty-panel {
   min-height: 462px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: var(--radius-panel);
   padding: 65px 28px;
   background: color-mix(in srgb, var(--surface) 50%, var(--bg));
   display: flex;
@@ -934,9 +922,7 @@ summary::-webkit-details-marker {
   margin-bottom: 25px;
   padding: 18px;
   background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  transform: none;
+  border-radius: var(--radius-panel);
 }
 .empty-plan-diagram span {
   height: 7px;
@@ -997,7 +983,7 @@ summary::-webkit-details-marker {
   border-left: 3px solid var(--accent);
   background: var(--accent-soft);
   padding: 16px 18px;
-  border-radius: 0 6px 6px 0;
+  border-radius: 0 var(--radius-panel) var(--radius-panel) 0;
   margin-bottom: 20px;
 }
 .decision-card h3 {
@@ -1285,7 +1271,7 @@ summary::-webkit-details-marker {
   top: 80px;
   z-index: 19;
   scroll-margin-top: 90px;
-  border-radius: 6px;
+  border-radius: var(--radius-control);
   padding: 11px 16px;
   background: var(--accent-soft);
   margin-bottom: 18px;
@@ -1433,8 +1419,7 @@ summary::-webkit-details-marker {
   .workspace-heading {
     margin-bottom: 16px;
   }
-  .workspace-heading .eyebrow,
-  .workspace-heading > div > p:last-child {
+  .workspace-heading .eyebrow {
     display: none;
   }
   .snapshot-grid {
@@ -1494,9 +1479,6 @@ summary::-webkit-details-marker {
   }
   .table-input {
     width: 100px;
-    border: 1px solid var(--control-line);
-    background: var(--surface);
-    min-height: 40px;
   }
   .fund-name strong {
     font-size: 0.875rem;
@@ -1577,9 +1559,6 @@ summary::-webkit-details-marker {
   }
   .table-input {
     width: 130px;
-    border: 1px solid var(--control-line);
-    background: var(--surface);
-    min-height: 40px;
   }
   .generate-actions {
     flex-direction: column;
@@ -1617,7 +1596,6 @@ summary::-webkit-details-marker {
   }
   .empty-panel {
     min-height: 420px;
-    border: 1px solid var(--line);
   }
   .result-kpis .kpi-value {
     font-size: 1.375rem;
@@ -1691,9 +1669,6 @@ summary::-webkit-details-marker {
   .workspace-heading h2 {
     font-size: 1.4375rem;
   }
-  .workspace-heading p:last-child {
-    font-size: 0.875rem;
-  }
   .local-badge {
     display: none;
   }
@@ -1755,8 +1730,6 @@ summary::-webkit-details-marker {
   .table-input {
     width: 126px;
     min-height: 44px;
-    border: 1px solid var(--control-line);
-    background: var(--surface);
   }
   .table-input input {
     height: 42px;
@@ -1865,7 +1838,6 @@ summary::-webkit-details-marker {
   .empty-panel {
     min-height: 390px;
     padding: 35px 20px;
-    border: 1px solid var(--line);
   }
   .empty-panel p {
     font-size: 0.875rem;
@@ -2020,9 +1992,6 @@ summary::-webkit-details-marker {
   }
   .table-input {
     width: 112px;
-    border: 1px solid var(--control-line);
-    background: var(--surface);
-    min-height: 44px;
   }
   .card-header p {
     max-width: 170px;

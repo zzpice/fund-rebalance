@@ -51,6 +51,18 @@ function renderFunds() {
   `).join("");
 }
 
+function renderWanAmount(selector, value) {
+  const [amount, unit] = formatWan(value).split(" ");
+  const element = $(selector);
+  element.textContent = amount;
+  if (unit) {
+    const label = document.createElement("span");
+    label.className = "amount-unit";
+    label.textContent = ` ${unit}`;
+    element.append(label);
+  }
+}
+
 function renderAllocationBase() {
   const targetWeights = FUNDS.map(fund => fund.targetBps / 10_000);
   $("#targetRing").style.setProperty("--ring-gradient", allocationGradient(targetWeights));
@@ -251,12 +263,12 @@ function updateLiveState() {
     return;
   }
 
-  $("#currentTotal").textContent = formatWan(current.total);
+  renderWanAmount("#currentTotal", current.total);
   try {
     const flow = readFlow();
     const after = current.total + flow;
     if (after <= 0) throw new Error();
-    $("#afterTotal").textContent = formatWan(after);
+    renderWanAmount("#afterTotal", after);
     $("#flowSummary").textContent = flowLabel(flow);
   } catch {
     $("#afterTotal").textContent = "—";
@@ -304,7 +316,7 @@ function updateAllocation(current) {
   const weights = current.rows.map(row => row.weight);
   $("#currentRing").style.setProperty("--ring-gradient", allocationGradient(weights));
   $("#currentRing").classList.add("is-ready");
-  $("#chartTotal").textContent = formatWan(current.total);
+  renderWanAmount("#chartTotal", current.total);
   $("#chartState").textContent = current.breached ? "越界" : "区间内";
   $("#chartState").className = current.breached ? "warning" : "positive";
   $("#allocationChart").setAttribute(
