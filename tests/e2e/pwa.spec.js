@@ -1,9 +1,11 @@
 import { test, expect } from "@playwright/test";
 
-test("PWA 外壳、模块与在线更新可用", async ({ page, request, baseURL }) => {
+test("PWA 外壳、模块与在线更新可用", async ({ page, request, baseURL, browserName, context }) => {
   const assets = [
     "./LICENSE",
     "./manifest.webmanifest",
+    "./manifest-dark.webmanifest",
+    "./src/theme.js",
     "./service-worker.js",
     "./styles/app.css",
     "./src/app.js",
@@ -19,9 +21,10 @@ test("PWA 外壳、模块与在线更新可用", async ({ page, request, baseURL
   const manifestResponse = await request.get("./manifest.webmanifest");
   const manifest = await manifestResponse.json();
   const appURL = new URL("./", baseURL).href;
-  for (const key of ["id", "start_url", "scope"]) {
+  for (const key of ["start_url", "scope"]) {
     expect(new URL(manifest[key], manifestResponse.url()).href, key).toBe(appURL);
   }
+  expect(new URL(manifest.id, new URL(appURL).origin).href).toBe(new URL("/zp-folio/", appURL).href);
   for (const icon of manifest.icons) {
     const asset = new URL(icon.src, manifestResponse.url()).href;
     const response = await request.get(asset);
@@ -31,6 +34,12 @@ test("PWA 外壳、模块与在线更新可用", async ({ page, request, baseURL
   const cacheName = `zp-folio-v${manifest.version}`;
 
   await page.goto("./");
+  if (browserName === "chromium") {
+    const session = await context.newCDPSession(page);
+    const parsed = await session.send("Page.getAppManifest");
+    expect(parsed.manifest.id).toBe(new URL("/zp-folio/", appURL).href);
+    await session.detach();
+  }
   const iconURLs = [...new Set(manifest.icons.map(icon => new URL(icon.src, appURL).href))];
   iconURLs.push(new URL("./icons/apple-touch-icon.png", appURL).href);
   await page.evaluate(async urls => {
@@ -139,7 +148,8 @@ test("主题偏好使用新键并在刷新后保留", async ({ page }) => {
   await page.goto("./");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await expect(page.locator("#themeColor")).toHaveAttribute("content", "#121619");
-  await page.locator("[data-theme-toggle]").click();
+  await page.locator(".theme-menu summary").click();
+  await page.getByRole("radio", {name:"浅色",exact:true}).check();
   expect(await page.evaluate(() => localStorage.getItem("zp-folio-theme"))).toBe("light");
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");

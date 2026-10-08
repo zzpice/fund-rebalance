@@ -32,7 +32,7 @@ jobs:
       - name: Assemble public site
         run: |
           mkdir -p build/pages
-          cp -R index.html manifest.webmanifest service-worker.js styles src icons LICENSE .nojekyll build/pages/
+          cp -R index.html manifest.webmanifest manifest-dark.webmanifest service-worker.js styles src icons LICENSE .nojekyll build/pages/
       - run: SITE_ROOT=build/pages npm test
       - uses: actions/upload-artifact@v7
         if: failure()
