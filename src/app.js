@@ -10,7 +10,6 @@ import { formatCurrency, formatPercent, formatSignedPoints, formatWan } from "./
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
-const THEME_KEY = "zp-folio-theme";
 const FUND_COLORS = ["var(--fund-1)", "var(--fund-2)", "var(--fund-3)", "var(--fund-4)"];
 const VIEW_TITLES = Object.freeze({
   workspace: "工作台",
@@ -27,7 +26,6 @@ renderFunds();
 renderAllocationBase();
 renderBands();
 bindEvents();
-applyTheme(document.documentElement.dataset.theme);
 updateLiveState();
 registerServiceWorker();
 const wideWorkspace = window.matchMedia("(min-width: 1100px)");
@@ -128,7 +126,6 @@ function bindEvents() {
   $("#clearButton").addEventListener("click", clearInputs);
   $("#copyButton").addEventListener("click", copyPlan);
   $$("[data-refresh-version]").forEach(button => button.addEventListener("click", () => refreshVersion(button)));
-  $$("[data-theme-toggle]").forEach(button => button.addEventListener("click", toggleTheme));
   $$("[data-view-nav]").forEach(button => button.addEventListener("click", () => setView(button.dataset.viewNav)));
 }
 
@@ -598,22 +595,6 @@ function flowLabel(flow) {
   if (flow > 0) return `＋${formatWan(flow)}`;
   if (flow < 0) return `−${formatWan(-flow)}`;
   return "无变动";
-}
-
-function toggleTheme() {
-  const theme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-  applyTheme(theme);
-  try { localStorage.setItem(THEME_KEY, theme); } catch {}
-}
-
-function applyTheme(theme) {
-  document.documentElement.dataset.theme = theme;
-  $("#themeColor").content = theme === "dark" ? "#121619" : "#f6f7f8";
-  $$("[data-theme-toggle]").forEach(button => {
-    const dark = theme === "dark";
-    button.setAttribute("aria-pressed", String(dark));
-    button.setAttribute("aria-label", `切换到${dark ? "浅色" : "深色"}外观`);
-  });
 }
 
 function registerServiceWorker() {

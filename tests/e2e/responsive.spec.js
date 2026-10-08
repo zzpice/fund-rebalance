@@ -59,7 +59,7 @@ test("所有尺寸共用任务导航并支持系统深色和显式切换", async
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await expect(page.locator("#themeColor")).toHaveAttribute("content", "#121619");
-  await expect(page.locator("[data-theme-toggle]").first()).toHaveAttribute("aria-label", "切换到浅色外观");
+  await expect(page.locator(".theme-menu summary").first()).toHaveAttribute("aria-label", "外观：跟随系统（当前深色）");
   await expect(page.getByRole("navigation", {name:"任务导航"})).toBeVisible();
 
   await page.setViewportSize({ width: 390, height: 844 });
@@ -69,7 +69,8 @@ test("所有尺寸共用任务导航并支持系统深色和显式切换", async
   const darkBackground = await page.locator("html").evaluate(element => getComputedStyle(element).getPropertyValue("--bg").trim());
   expect(darkBackground).toBe("#121619");
 
-  await page.locator("[data-theme-toggle]").click();
+  await page.locator(".theme-menu summary").click();
+  await page.getByRole("radio", {name:"浅色",exact:true}).check();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-  await expect(page.locator("[data-theme-toggle]")).toHaveAttribute("aria-label", "切换到深色外观");
+  await expect(page.locator(".theme-menu summary")).toHaveAttribute("aria-label", "外观：浅色（当前浅色）");
 });

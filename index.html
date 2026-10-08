@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
     <meta
@@ -7,6 +7,26 @@
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
     <meta name="theme-color" id="themeColor" content="#f6f7f8" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      // Paint the saved appearance even while the theme controller is downloading.
+      (() => {
+        let mode = 'system';
+        try {
+          const saved = localStorage.getItem('zp-folio-theme');
+          if (saved === 'light' || saved === 'dark') mode = saved;
+        } catch {}
+        const theme = mode === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : mode;
+        const root = document.documentElement;
+        const color = theme === 'dark' ? '#121619' : '#f6f7f8';
+        root.dataset.themeMode = mode;
+        root.dataset.theme = theme;
+        root.style.colorScheme = theme;
+        root.style.backgroundColor = color;
+        document.querySelector('meta[name="theme-color"]').content = color;
+        document.querySelector('meta[name="color-scheme"]').content = theme;
+      })();
+    </script>
     <meta
       name="description"
       content="固定四基金的本地再平衡工具。填写持仓与资金变动，生成调整方案；持仓不上传、不保存。"
@@ -16,26 +36,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="基金再平衡" />
     <title>基金再平衡 · ZZP</title>
-    <script>
-      (() => {
-        let theme;
-        // Keep this key in sync with src/app.js.
-        try {
-          theme = localStorage.getItem("zp-folio-theme");
-        } catch {}
-        if (theme !== "dark" && theme !== "light") {
-          theme = window.matchMedia?.("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light";
-        }
-        document.documentElement.dataset.theme = theme;
-        document.getElementById("themeColor").content =
-          theme === "dark" ? "#121619" : "#f6f7f8";
-      })();
-    </script>
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <script src="./src/theme.js"></script>
     <link rel="stylesheet" href="./styles/app.css" />
     <link rel="canonical" href="https://zzpice.github.io/zp-folio/" />
     <meta property="og:type" content="website" />
@@ -88,22 +92,20 @@
               <path d="M20 11a8 8 0 1 0-2.3 6.7M20 5v6h-6" />
             </svg>
           </button>
-          <button
-            class="icon-button"
-            type="button"
-            data-theme-toggle
-            aria-label="切换到深色外观"
-            aria-pressed="false"
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="12" cy="12" r="8" />
-              <path
-                d="M12 4v16M12 4a8 8 0 0 0 0 16Z"
-                fill="currentColor"
-                stroke="none"
-              />
-            </svg>
-          </button>
+          <details class="theme-menu" hidden>
+            <summary class="icon-button" aria-label="外观：跟随系统">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="8" />
+                <path d="M12 4v16M12 4a8 8 0 0 0 0 16Z" fill="currentColor" stroke="none" />
+              </svg>
+            </summary>
+            <fieldset>
+              <legend class="sr-only">外观</legend>
+              <label><input type="radio" name="appearance" value="system" checked />跟随系统</label>
+              <label><input type="radio" name="appearance" value="light" />浅色</label>
+              <label><input type="radio" name="appearance" value="dark" />深色</label>
+            </fieldset>
+          </details>
         </div>
       </div>
       <div class="header-navigation">
@@ -111,7 +113,7 @@
           <img src="./icons/icon.svg" alt="" width="34" height="34" />
           <div>
             <h1>基金再平衡</h1>
-            <small>v3.1.1</small>
+            <small>v3.1.2</small>
           </div>
         </div>
         <nav class="workspace-nav" aria-label="任务导航">
