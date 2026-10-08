@@ -560,7 +560,7 @@ async function copyPlan() {
 function buildCopyText(plan) {
   const decision = decisionCopy(plan);
   const lines = [
-    `zp-folio · 执行方案 v${VERSION}`,
+    `基金再平衡 · 执行方案 v${VERSION}`,
     `当前总额：${formatCurrency(plan.currentTotal)}`,
     `资金变动：${formatCurrency(plan.flow, { signed: true })}`,
     `调整后总额：${formatCurrency(plan.finalTotal)}`,

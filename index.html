@@ -13,7 +13,7 @@
       (() => {
         let mode = 'system';
         try {
-          const saved = localStorage.getItem('zp-folio-theme');
+          const saved = localStorage.getItem('fund-rebalance-theme');
           if (saved === 'light' || saved === 'dark') mode = saved;
         } catch {}
         const theme = mode === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : mode;
@@ -41,19 +41,19 @@
     <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
     <script src="./src/theme.js"></script>
     <link rel="stylesheet" href="./styles/app.css" />
-    <link rel="canonical" href="https://zzpice.github.io/zp-folio/" />
+    <link rel="canonical" href="https://zzpice.github.io/fund-rebalance/" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="zh_CN" />
-    <meta property="og:site_name" content="ZZP 工具与资源" />
+    <meta property="og:site_name" content="基金再平衡" />
     <meta property="og:title" content="基金再平衡 · ZZP" />
     <meta
       property="og:description"
       content="固定四基金的本地再平衡工具。填写持仓与资金变动，生成调整方案；持仓不上传、不保存。"
     />
-    <meta property="og:url" content="https://zzpice.github.io/zp-folio/" />
+    <meta property="og:url" content="https://zzpice.github.io/fund-rebalance/" />
     <meta
       property="og:image"
-      content="https://zzpice.github.io/zp-folio/icons/social-preview.png?v=20261008visual"
+      content="https://zzpice.github.io/fund-rebalance/icons/social-preview.png?v=20261008visual"
     />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -66,7 +66,7 @@
     />
     <meta
       name="twitter:image"
-      content="https://zzpice.github.io/zp-folio/icons/social-preview.png?v=20261008visual"
+      content="https://zzpice.github.io/fund-rebalance/icons/social-preview.png?v=20261008visual"
     />
   </head>
   <body>
@@ -113,7 +113,7 @@
           <img src="./icons/icon.svg" alt="" width="34" height="34" />
           <div>
             <h1>基金再平衡</h1>
-            <small>v3.1.3</small>
+            <small>v3.1.4</small>
           </div>
         </div>
         <nav class="workspace-nav" aria-label="任务导航">

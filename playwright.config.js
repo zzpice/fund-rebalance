@@ -21,8 +21,8 @@ export default defineConfig({
       timeout: 15000
     },
     {
-      command: "node tests/server.mjs --port 4174 --base-path /zp-folio/",
-      url: "http://127.0.0.1:4174/zp-folio/",
+      command: "node tests/server.mjs --port 4174 --base-path /fund-rebalance/",
+      url: "http://127.0.0.1:4174/fund-rebalance/",
       reuseExistingServer: !process.env.CI,
       timeout: 15000
     }
@@ -33,7 +33,7 @@ export default defineConfig({
     {
       name: "chromium-pages",
       testMatch: "**/pwa.spec.js",
-      use: { browserName: "chromium", baseURL: "http://127.0.0.1:4174/zp-folio/" }
+      use: { browserName: "chromium", baseURL: "http://127.0.0.1:4174/fund-rebalance/" }
     }
   ]
 });

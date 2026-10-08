@@ -24,20 +24,20 @@ test("PWA 外壳、模块与在线更新可用", async ({ page, request, baseURL
   for (const key of ["start_url", "scope"]) {
     expect(new URL(manifest[key], manifestResponse.url()).href, key).toBe(appURL);
   }
-  expect(new URL(manifest.id, new URL(appURL).origin).href).toBe(new URL("/zp-folio/", appURL).href);
+  expect(new URL(manifest.id, new URL(appURL).origin).href).toBe(new URL("/fund-rebalance/", appURL).href);
   for (const icon of manifest.icons) {
     const asset = new URL(icon.src, manifestResponse.url()).href;
     const response = await request.get(asset);
     expect(response.ok(), asset).toBe(true);
   }
 
-  const cacheName = `zp-folio-v${manifest.version}`;
+  const cacheName = `fund-rebalance-v${manifest.version}`;
 
   await page.goto("./");
   if (browserName === "chromium") {
     const session = await context.newCDPSession(page);
     const parsed = await session.send("Page.getAppManifest");
-    expect(parsed.manifest.id).toBe(new URL("/zp-folio/", appURL).href);
+    expect(parsed.manifest.id).toBe(new URL("/fund-rebalance/", appURL).href);
     await session.detach();
   }
   const iconURLs = [...new Set(manifest.icons.map(icon => new URL(icon.src, appURL).href))];
@@ -75,8 +75,8 @@ test("PWA 外壳、模块与在线更新可用", async ({ page, request, baseURL
 
 test("Service Worker 清理过期缓存，保留当前与无关缓存", async ({ page, request }) => {
   const manifest = await (await request.get("./manifest.webmanifest")).json();
-  const currentCache = `zp-folio-v${manifest.version}`;
-  const staleCaches = ["zp-folio-v0.0.0"];
+  const currentCache = `fund-rebalance-v${manifest.version}`;
+  const staleCaches = ["fund-rebalance-v0.0.0"];
   const unrelatedCache = "another-app-v1";
 
   await page.goto("./");
@@ -141,8 +141,8 @@ test("PWA 离线可计算，更新失败保留方案，联网后可刷新版本"
 test("主题偏好使用新键并在刷新后保留", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "light" });
   await page.addInitScript(() => {
-    if (localStorage.getItem("zp-folio-theme") === null) {
-      localStorage.setItem("zp-folio-theme", "dark");
+    if (localStorage.getItem("fund-rebalance-theme") === null) {
+      localStorage.setItem("fund-rebalance-theme", "dark");
     }
   });
   await page.goto("./");
@@ -150,7 +150,7 @@ test("主题偏好使用新键并在刷新后保留", async ({ page }) => {
   await expect(page.locator("#themeColor")).toHaveAttribute("content", "#121619");
   await page.locator(".theme-menu summary").click();
   await page.getByRole("radio", {name:"浅色",exact:true}).check();
-  expect(await page.evaluate(() => localStorage.getItem("zp-folio-theme"))).toBe("light");
+  expect(await page.evaluate(() => localStorage.getItem("fund-rebalance-theme"))).toBe("light");
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 });
