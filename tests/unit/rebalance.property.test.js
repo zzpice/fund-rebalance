@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { sum } from "../../src/portfolio.js";
+import { FUNDS, sum } from "../../src/portfolio.js";
 import { createRebalancePlan } from "../../src/rebalance.js";
 
 function mulberry32(seed) {
@@ -23,7 +23,7 @@ test("接近安全整数上限时临时回调金额也保持精确守恒", () =>
   const exactSum = values => values.reduce((total, value) => total + BigInt(value), 0n);
   for (let index = 0; index < 1000; index++) {
     const total = Number.MAX_SAFE_INTEGER - index;
-    const cuts = [0, total, ...Array.from({length:3}, () => randomInt(random, total))].sort((a,b) => a-b);
+    const cuts = [0, total, ...Array.from({length:FUNDS.length - 1}, () => randomInt(random, total))].sort((a,b) => a-b);
     const holdings = cuts.slice(1).map((value, i) => value - cuts[i]);
     const plan = createRebalancePlan({holdings});
     assert.equal(exactSum(plan.final), BigInt(total));
@@ -36,7 +36,7 @@ test("固定种子的随机组合始终满足再平衡核心不变量", () => {
   const random = mulberry32(0x5a17c0de);
 
   for (let caseIndex = 0; caseIndex < 3000; caseIndex += 1) {
-    const holdings = Array.from({ length: 4 }, () => randomInt(random, 2_000_001));
+    const holdings = FUNDS.map(() => randomInt(random, 2_000_001));
     if (sum(holdings) === 0) holdings[randomInt(random, holdings.length)] = 1;
 
     const currentTotal = sum(holdings);
@@ -78,7 +78,7 @@ test("固定种子的随机组合始终满足再平衡核心不变量", () => {
     if (flow < 0) {
       assert.deepEqual(
         plan.internalTrades,
-        [0, 0, 0, 0],
+        holdings.map(() => 0),
         `case ${caseIndex}: withdrawal must not create internal conversion`
       );
       assert.deepEqual(

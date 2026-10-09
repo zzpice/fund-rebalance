@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { FUNDS } from "../../src/portfolio.js";
 
 async function fillHoldings(page, values) {
   for (let index = 0; index < values.length; index += 1) {
@@ -49,7 +50,7 @@ test("目标组合无资金变动时清楚说明无需操作", async ({ page }) 
   await expect(page.locator("#decisionTitle")).toHaveText("无需调整");
   await expect(page.locator("#noTrades")).toBeVisible();
   await expect(page.locator("#activeTradesTable")).toBeHidden();
-  await expect(page.getByTestId("unchanged-item")).toHaveCount(4);
+  await expect(page.getByTestId("unchanged-item")).toHaveCount(FUNDS.length);
   await expect(page.locator("#internalTurnover")).toHaveText("¥0");
 });
 
@@ -62,7 +63,7 @@ test("新增资金方案只有买入且不产生基金间转换", async ({ page 
   await expect(page.locator("#decisionBadge")).toHaveText("仅新增");
   await expect(page.locator("#internalTurnover")).toHaveText("¥0");
   await expect(page.locator(".action-pill.negative")).toHaveCount(0);
-  await expect(page.locator(".action-pill.positive")).toHaveCount(4);
+  await expect(page.locator(".action-pill.positive")).toHaveCount(FUNDS.length);
   await expect(page.locator("#unchangedTrades")).toBeHidden();
 });
 

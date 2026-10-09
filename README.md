@@ -54,13 +54,17 @@ npm run dev
 
 开发地址：`http://127.0.0.1:4173/`。测试覆盖计算规则、Chromium / WebKit 交互，以及根路径和 `/fund-rebalance/` 下的 PWA 更新。离线冷重载在 Chromium 中验证；Playwright WebKit 的离线重载存在测试驱动限制，只验证已打开页面的离线计算与失败恢复，Safari 真机需另外复核。
 
+日常流程：修改代码 → 按范围验证 → 提交并直接推送 `main` → Actions 自动检查 → 成功后部署 Pages。无需 PR、审批或合并分支。计算或输入逻辑改动运行相关单元测试，界面或 PWA 改动运行相关浏览器测试；`npm test` 用于完整验证，已通过且未受影响的测试无需重复运行。测试使用合成金额，不读取真实用户持仓。
+
 样式集中在 `styles/app.css`，主题由本项目维护。`src/theme.js` 管理三种模式：手动浅深色使用 `fund-rebalance-theme`，恢复系统时移除此键；系统变化与同站其他标签页会实时同步。内联初始化在外部脚本 / 样式下载前设置背景和 `color-scheme`，存储不可用时仍支持当前页面切换。计算与持仓不受主题切换影响。宽屏将持仓、资金调整与执行方案并排显示；配比图和金额核对按需展开。手机采用填写、执行方案和规则三个任务视图，底部固定生成操作，生成后可返回调整。修改输入会立即使旧方案失效。计算核心与界面保持分离。
 
 资源和 Service Worker 使用相对路径；浅深两份 manifest 的安装 ID 固定为 `/fund-rebalance/`，`start_url`、`scope` 为 `./`，身份与图标相同；按当前外观选择安装背景色，页面的 `theme-color` 实时更新。操作系统启动画面可能沿用安装时缓存，已安装应用的启动画面更新由浏览器管理。版本升级时一起更新两份 manifest。更换安装地址后，请从本页的当前链接重新添加到主屏幕，并重新选择主题。持仓不保存，无持仓数据需要迁移。
 
 缓存：`fund-rebalance-v<版本>`，只缓存声明的完整应用文件，命中后使用同一版本，不在打开期间混入新模块。新版本默认等待旧页面关闭，用户主动刷新时才请求激活；刷新失败保留输入。仅清理本应用的旧版本。
 
-Pages 通过 [.github/workflows/test.yml](.github/workflows/test.yml) 在测试成功后发布文件白名单，包含入口、模块、样式、图标、许可、manifest 与 Service Worker，不发布测试或开发依赖。CI 先组装 `build/pages`，再用 `SITE_ROOT=build/pages npm test` 验证实际发布目录。撤销问题提交并重新运行检查可恢复页面。
+Pages 通过唯一的 [.github/workflows/test.yml](.github/workflows/test.yml) 发布。推送 `main` 自动运行，纯 Markdown 修改跳过；需要时可手动运行完整检查。CI 先执行 `npm run test:unit`，通过后仅安装一次依赖、组装一次 `build/pages`，再用 `SITE_ROOT=build/pages npm run test:e2e` 验证实际发布目录。金额计算、守恒、边界与输入校验始终保留，浏览器覆盖 Chromium / WebKit 交互和 PWA 路径；没有其他流程重复执行这些测试。
+
+全部检查通过才上传并部署发布目录；失败会保留 Git 提交并阻止部署，线上继续使用上次成功产物。发布白名单包含入口、模块、样式、图标、许可、manifest 与 Service Worker，不发布测试或开发依赖。工作流不自动提交生成文件或缓存，`build/`、依赖和测试产物均已忽略，不会形成循环构建。需要撤销问题代码时提交常规 revert 即可。
 
 当前版本：**v3.1.5**
 

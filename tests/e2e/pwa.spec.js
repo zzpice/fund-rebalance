@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { FUNDS } from "../../src/portfolio.js";
 
 test("PWA 外壳、模块与在线更新可用", async ({ page, request, baseURL, browserName, context }) => {
   const assets = [
@@ -64,7 +65,7 @@ test("PWA 外壳、模块与在线更新可用", async ({ page, request, baseURL
     contentType:'application/javascript', body:"throw new Error('mixed generation');"
   }));
   await page.reload();
-  await expect(page.locator(".holding-input")).toHaveCount(4);
+  await expect(page.locator(".holding-input")).toHaveCount(FUNDS.length);
   const cachedApp = await page.evaluate(async cacheName => {
     const cache = await caches.open(cacheName);
     const response = await cache.match(new URL("./src/app.js", location.href).href);
@@ -116,7 +117,7 @@ test("PWA 离线可计算，更新失败保留方案，联网后可刷新版本"
   // Playwright WebKit rejects offline navigation before dispatching to a Service Worker.
   // Chromium covers offline startup; WebKit still exercises computation and failed refresh offline.
   if (browserName !== "webkit") await page.reload();
-  await expect(page.locator(".holding-input")).toHaveCount(4);
+  await expect(page.locator(".holding-input")).toHaveCount(FUNDS.length);
   await expect(page.locator(".app-header")).toHaveCSS("position", "sticky");
   for (const [index, value] of ["50", "33.33", "12.5", "4.17"].entries()) {
     await page.locator(`#holding-${index}`).fill(value);
@@ -135,7 +136,7 @@ test("PWA 离线可计算，更新失败保留方案，联网后可刷新版本"
   await context.setOffline(false);
   await page.locator("[data-refresh-version]").click();
   await expect(page.locator("#holding-0")).toHaveValue("");
-  await expect(page.locator(".holding-input")).toHaveCount(4);
+  await expect(page.locator(".holding-input")).toHaveCount(FUNDS.length);
 });
 
 test("主题偏好使用新键并在刷新后保留", async ({ page }) => {
