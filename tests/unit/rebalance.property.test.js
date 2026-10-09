@@ -18,6 +18,20 @@ function randomInt(random, maxExclusive) {
   return Math.floor(random() * maxExclusive);
 }
 
+test("接近安全整数上限时临时回调金额也保持精确守恒", () => {
+  const random = mulberry32(0x5a17c0de);
+  const exactSum = values => values.reduce((total, value) => total + BigInt(value), 0n);
+  for (let index = 0; index < 1000; index++) {
+    const total = Number.MAX_SAFE_INTEGER - index;
+    const cuts = [0, total, ...Array.from({length:3}, () => randomInt(random, total))].sort((a,b) => a-b);
+    const holdings = cuts.slice(1).map((value, i) => value - cuts[i]);
+    const plan = createRebalancePlan({holdings});
+    assert.equal(exactSum(plan.final), BigInt(total));
+    assert.equal(exactSum(plan.trades), 0n);
+    assert.equal(exactSum(plan.internalTrades), 0n);
+  }
+});
+
 test("固定种子的随机组合始终满足再平衡核心不变量", () => {
   const random = mulberry32(0x5a17c0de);
 

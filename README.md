@@ -62,6 +62,6 @@ npm run dev
 
 Pages 通过 [.github/workflows/test.yml](.github/workflows/test.yml) 在测试成功后发布文件白名单，包含入口、模块、样式、图标、许可、manifest 与 Service Worker，不发布测试或开发依赖。CI 先组装 `build/pages`，再用 `SITE_ROOT=build/pages npm test` 验证实际发布目录。撤销问题提交并重新运行检查可恢复页面。
 
-当前版本：**v3.1.4**
+当前版本：**v3.1.5**
 
 [MIT License](./LICENSE)。仅供配置计算，不构成投资建议。

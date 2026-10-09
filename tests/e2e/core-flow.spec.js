@@ -6,6 +6,16 @@ async function fillHoldings(page, values) {
   }
 }
 
+test("切换资金方向只修改符号，不改变精确到元的大金额", async ({ page }) => {
+  await page.goto("/");
+  const input = page.locator("#cashFlowInput");
+  await input.fill("900719925374.0993");
+  await page.locator('[data-flow-mode="withdraw"]').click();
+  await expect(input).toHaveValue("-900719925374.0993");
+  await page.locator('[data-flow-mode="add"]').click();
+  await expect(input).toHaveValue("+900719925374.0993");
+});
+
 test("填写输入后生成完整 Dashboard 取现方案并切到方案页", async ({ page }) => {
   await page.goto("/");
   await fillHoldings(page, ["60", "39.996", "15", "5.004"]);

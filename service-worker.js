@@ -1,4 +1,4 @@
-const VERSION = "3.1.4";
+const VERSION = "3.1.5";
 const CACHE_PREFIX = "fund-rebalance-";
 const CACHE_NAME = `${CACHE_PREFIX}v${VERSION}`;
 const resolve = path => new URL(path, self.location.href).href;

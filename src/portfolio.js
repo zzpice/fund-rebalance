@@ -1,4 +1,4 @@
-export const VERSION = "3.1.4";
+export const VERSION = "3.1.5";
 const YUAN_PER_WAN = 10_000;
 const WEIGHT_SCALE = 10_000;
 
@@ -38,9 +38,9 @@ export const FUNDS = Object.freeze([
 ]);
 
 const REBALANCE_RULE = Object.freeze({
-  absoluteBand: 0.05,
-  relativeBand: 0.25,
-  reentryRatio: 0.8
+  absoluteBps: 500,
+  relativePercent: 25,
+  reentryPercent: 80
 });
 
 export const WITHDRAWAL_POLICY = Object.freeze({
@@ -110,11 +110,19 @@ export function buildBands(total, targets = allocateTargets(total)) {
 
   return FUNDS.map((fund, index) => {
     const targetWeight = fund.targetBps / WEIGHT_SCALE;
-    const tolerance = Math.min(
-      REBALANCE_RULE.absoluteBand,
-      targetWeight * REBALANCE_RULE.relativeBand
+    // Hundredths of a basis point keep both bands exact before yuan rounding.
+    const scale = WEIGHT_SCALE * 100;
+    const targetUnits = fund.targetBps * 100;
+    const toleranceUnits = Math.min(
+      REBALANCE_RULE.absoluteBps * 100,
+      fund.targetBps * REBALANCE_RULE.relativePercent
     );
-    const reentryTolerance = tolerance * REBALANCE_RULE.reentryRatio;
+    const reentryUnits = toleranceUnits * REBALANCE_RULE.reentryPercent / 100;
+    const tolerance = toleranceUnits / scale;
+    const reentryTolerance = reentryUnits / scale;
+    const boundary = (units, ceil = false) => Number(
+      (BigInt(total) * BigInt(units) + (ceil ? BigInt(scale - 1) : 0n)) / BigInt(scale)
+    );
     const target = targets[index];
 
     return {
@@ -126,10 +134,10 @@ export function buildBands(total, targets = allocateTargets(total)) {
       highWeight: targetWeight + tolerance,
       reentryLowWeight: targetWeight - reentryTolerance,
       reentryHighWeight: targetWeight + reentryTolerance,
-      low: Math.min(target, Math.max(0, Math.ceil(total * (targetWeight - tolerance) - 1e-9))),
-      high: Math.max(target, Math.floor(total * (targetWeight + tolerance) + 1e-9)),
-      reentryLow: Math.min(target, Math.max(0, Math.ceil(total * (targetWeight - reentryTolerance) - 1e-9))),
-      reentryHigh: Math.max(target, Math.floor(total * (targetWeight + reentryTolerance) + 1e-9))
+      low: Math.min(target, boundary(targetUnits - toleranceUnits, true)),
+      high: Math.max(target, boundary(targetUnits + toleranceUnits)),
+      reentryLow: Math.min(target, boundary(targetUnits - reentryUnits, true)),
+      reentryHigh: Math.max(target, boundary(targetUnits + reentryUnits))
     };
   });
 }

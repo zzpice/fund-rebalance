@@ -52,6 +52,26 @@ test("边界属于安全区间，越过 ¥1 才触发", () => {
   assert.equal(outside.rows[0].breached, true);
 });
 
+test("大金额的整数边界精确取整，不被浮点误差缩小或扩大", () => {
+  const rates = [
+    [90000, 110000, 92000, 108000],
+    [56660, 76660, 58660, 74660],
+    [18750, 31250, 20000, 30000],
+    [6255, 10425, 6672, 10008]
+  ];
+  const keys = ["low", "high", "reentryLow", "reentryHigh"];
+  for (const total of [1_000_000_000_000, Number.MAX_SAFE_INTEGER]) {
+    buildBands(total).forEach((band, index) => {
+      keys.forEach((key, column) => {
+        const numerator = BigInt(total) * BigInt(rates[index][column]);
+        const rounded = Number((numerator + (column % 2 === 0 ? 199999n : 0n)) / 200000n);
+        assert.equal(band[key], rounded, `${total}: ${index} ${key}`);
+      });
+    });
+  }
+  assert.throws(() => snapshot([Number.MAX_SAFE_INTEGER, 2, 0, 0]), /整数金额/);
+});
+
 test("万单位输入精确到个位，并拒绝负持仓与过多小数", () => {
   assert.equal(parseWanAmount("12.3456"), 123_456);
   assert.equal(parseWanAmount("900719925374.0993"), 9_007_199_253_740_993);

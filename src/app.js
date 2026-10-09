@@ -118,8 +118,12 @@ function bindEvents() {
   $$("[data-return-edit]").forEach(button => button.addEventListener("click", () => { setView("workspace"); $("#holding-0").focus(); }));
   $$("[data-flow-mode]").forEach(button => button.addEventListener("click", () => {
     const input = $("#cashFlowInput");
-    const value = Math.abs(Number(input.value));
-    input.value = button.dataset.flowMode === "none" ? "0" : (button.dataset.flowMode === "withdraw" ? "-" : "+") + String(Number.isFinite(value) ? value : 0);
+    let value = "0";
+    try {
+      parseWanAmount(input.value, { allowNegative: true });
+      value = input.value.trim().replace(/^[+-]/, "");
+    } catch {}
+    input.value = button.dataset.flowMode === "none" ? "0" : (button.dataset.flowMode === "withdraw" ? "-" : "+") + value;
     handleInputChange(input);
     $$("[data-flow-mode]").forEach(item => item.setAttribute("aria-pressed", String(item === button)));
     input.focus(); input.setSelectionRange(button.dataset.flowMode === "none" ? 0 : 1,input.value.length);

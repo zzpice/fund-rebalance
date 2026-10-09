@@ -171,7 +171,9 @@ function rebalanceToReentry(values, bands) {
     else if (amount > bands[index].reentryHigh) final[index] = bands[index].reentryHigh;
   });
 
-  const gap = sum(values) - sum(final);
+  // Clamping can temporarily exceed the safe total even though each holding
+  // and the required net adjustment are exact integers. Sum differences first.
+  const gap = sum(values.map((amount, index) => amount - final[index]));
   const direction = Math.sign(gap);
   if (!direction) return final;
 
